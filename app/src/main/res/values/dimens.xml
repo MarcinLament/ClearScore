@@ -1,0 +1,10 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin_large">24dp</dimen>
+
+    <dimen name="credit_score_control_size">250dp</dimen>
+    <dimen name="credit_score_translation_y">-16dp</dimen>
+    <dimen name="credit_score_translation_z">8dp</dimen>
+</resources>

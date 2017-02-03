@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#4FC0F5</color>
+    <color name="colorPrimaryDark">#4FC0F5</color>
+    <color name="colorAccent">#0E79AB</color>
+    <color name="colorGrey">#555555</color>
+
+
+    <color name="colorPrimaryText">#333333</color>
+    <color name="colorSecondaryText">#FFFFFF</color>
+
+    <color name="colorWindow">@color/colorPrimary</color>
+    <color name="colorScoreArea">#FFFFFF</color>
+
+    <color name="colorProgressRed1">#e84109</color>
+    <color name="colorProgressRed2">#ff6e0d</color>
+    <color name="colorProgressOrange1">#ff6e0d</color>
+    <color name="colorProgressOrange2">#B3F21F</color>
+    <color name="colorProgressGreen1">#B3F21F</color>
+    <color name="colorProgressGreen2">#15E8CC</color>
+    <color name="colorProgressBlue1">#15E8CC</color>
+    <color name="colorProgressBlue2">#10A0E8</color>
+</resources>

@@ -1,0 +1,56 @@
+apply plugin: 'com.android.application'
+apply plugin: 'me.tatarka.retrolambda'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "25.0.1"
+    defaultConfig {
+        applicationId "lammar.com.csdemo"
+        minSdkVersion 19
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    packagingOptions {
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+
+
+}
+
+dependencies {
+    // Dependencies for local unit tests
+    testCompile 'junit:junit:4.12'
+    testCompile "org.mockito:mockito-all:1.10.19"
+    testCompile "org.hamcrest:hamcrest-all:1.3"
+
+    compile 'com.android.support:appcompat-v7:23.3.0'
+
+    compile 'com.jakewharton:butterknife:8.2.1'
+    compile 'com.jakewharton:butterknife-compiler:8.2.1'
+
+    compile 'io.reactivex:rxandroid:1.2.1'
+    compile 'io.reactivex:rxjava:1.1.7'
+
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.0.2'
+    compile 'com.squareup.retrofit2:converter-gson:2.0.0'
+
+    compile 'uk.co.chrisjenx:calligraphy:2.2.0'
+}
+
+

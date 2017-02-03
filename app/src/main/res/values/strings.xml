@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Clear Score Demo</string>
+
+    <string name="get_my_score_button">Check Credit Score</string>
+    <string name="start_again_button">Start again</string>
+
+    <string name="no_connection_error_title">Error</string>
+    <string name="no_connection_error_message">No internet connection.</string>
+    <string name="no_connection_error_button">Ok</string>
+
+    <string name="no_score_error_title">Error</string>
+    <string name="no_score_error_message">There was a problem retrieving the score</string>
+    <string name="no_score_error_button">Ok</string>
+
+    <string name="intro_message">Check your credit score by tapping the button below</string>
+    <string name="score_view_line1">Your credit score is</string>
+    <string name="score_view_line2">out of %1$d</string>
+</resources>
