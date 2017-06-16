@@ -12,11 +12,17 @@ android {
     }
     compileSdkVersion 23
     buildToolsVersion "25.0.1"
+
+    def customVersionCode = 1
+    if (project.hasProperty("VersionCode")){
+        customVersionCode = project.property("VersionCode").toInteger()
+    }
+
     defaultConfig {
         applicationId "lammar.com.csdemo"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 1
+        versionCode customVersionCode
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.release
