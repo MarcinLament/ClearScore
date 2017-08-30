@@ -25,19 +25,7 @@ node {
 			}
 		}
 		stage('PR Review') {
-			steps {
-				def userInput = input(
-				id: 'Proceed1', message: 'Was this successful?', parameters: [
-				[$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'Please confirm you agree with this']
-				])
-				if(userInput) {
-					step('Deploy') {
-						echo 'Publishing to Fabric...'
-					}	
-				} else {
-					currentBuild.result = 'FAILURE'
-				}
-			}
+			echo 'Waiting for the input...'
 		}
 	}
 }
