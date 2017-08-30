@@ -25,8 +25,8 @@ node {
 		def userInput
 		stage('PR Review') {
 			userInput = input(
-				id: 'Proceed1', message: 'Accept Pull Request?', parameters: [
-				[$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'Accept?']
+				id: 'Proceed1', message: 'Pull Request', parameters: [
+				[$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'Accept Pull Request??']
 				])
 			
 		}
