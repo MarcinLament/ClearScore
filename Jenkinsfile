@@ -47,7 +47,7 @@ node {
 				 id: 'Proceed3', message: 'Reason for failing?', parameters: [
 				 [$class: 'TextParameterDefinition', defaultValue: '', description: 'Reason', name: 'failReason']
 				])
-				echo 'Failed manual testing review: ${manualTestingComments}'
+				echo 'Failed manual testing review: ' + manualTestingComments['failReason']
 				currentBuild.result = 'FAILURE'
 			}
 		} else {
