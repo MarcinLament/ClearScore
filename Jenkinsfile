@@ -14,19 +14,19 @@ node {
 		}
 		stage('Test') {
 			parallel(
-				"Unit Test": {
+				"Unit Tests": {
 					echo 'Unit testing...'
 				},
-				"Instrumental Test": {
-					echo 'Android instumental testing...'
+				"Instrumented Tests": {
+					echo 'Android instrumented testing...'
 				}
 			)
 		}
 		def userInput
 		stage('PR Review') {
 			userInput = input(
-				id: 'Proceed1', message: 'Was this successful?', parameters: [
-				[$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'Please confirm you agree with this']
+				id: 'Proceed1', message: 'Accept Pull Request?', parameters: [
+				[$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'Accept?']
 				])
 			
 		}
@@ -35,6 +35,7 @@ node {
 				echo 'Publishing to Fabric...'
 			}	
 		} else {
+			echo 'Failed code review...'
 			currentBuild.result = 'FAILURE'
 		}
 	}
