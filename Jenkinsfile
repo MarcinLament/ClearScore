@@ -13,18 +13,29 @@ node {
 			echo 'Checking out code'
 		}
 		stage('Test') {
-        			parallel(
-					"Unit Test": {
-						echo 'Unit testing...'
-					},
-					"Instrumental Test": {
-						echo 'Android instumental testing...'
-					}
-				)
-		
+			parallel(
+				"Unit Test": {
+					echo 'Unit testing...'
+				},
+				"Instrumental Test": {
+					echo 'Android instumental testing...'
+				}
+			)
 		}
+		def userInput
 		stage('PR Review') {
-			echo 'Waiting for the input...'
+			userInput = input(
+				id: 'Proceed1', message: 'Was this successful?', parameters: [
+				[$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'Please confirm you agree with this']
+				])
+			
+		}
+		if(userInput) {
+			stage('Deploy') {
+				echo 'Publishing to Fabric...'
+			}	
+		} else {
+			currentBuild.result = 'FAILURE'
 		}
 	}
 }
