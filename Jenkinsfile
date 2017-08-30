@@ -13,13 +13,19 @@ node {
 			echo 'Checking out code'
 		}
 		stage('Test') {
-			step('Unit Test') {
-				echo 'Unit testing...'
+			steps {
+        			parallel(
+					"Unit Test": {
+						echo 'Unit testing...'
+					},
+					"Instrumental Test": {
+						echo 'Android instumental testing...'
+					}
+				)
 			}
-			step('Instrumental Test') {
-				echo 'Android instumental testing...'
-			}
-			step('PR Review') {
+		}
+		stage('PR Review') {
+			steps {
 				def userInput = input(
 				id: 'Proceed1', message: 'Was this successful?', parameters: [
 				[$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'Please confirm you agree with this']
