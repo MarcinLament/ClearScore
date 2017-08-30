@@ -28,12 +28,29 @@ node {
 				id: 'Proceed1', message: 'Pull Request', parameters: [
 				[$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'Accept Pull Request??']
 				])
-			
 		}
 		if(userInput) {
 			stage('Deploy') {
 				echo 'Publishing to Fabric...'
-			}	
+			}
+			def manualTestingResult
+			def manualTestingComments
+			stage('Manual Testing') {
+				manualTestingResult = input(
+				id: 'Proceed2', message: 'Manual testing', parameters: [
+				[$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'Has passed manual testing??']
+				])
+				manualTestingComments = input(
+				 id: 'Proceed3', message: 'Reason for failing?', parameters: [
+				 [$class: 'TextParameterDefinition', defaultValue: '', description: 'Reason', name: 'failReason']
+				])
+			}
+			if(manualTestingResult) {
+				echo 'Notify developer'
+			} else {
+				echo 'Failed manual testing review: $failReason'
+				currentBuild.result = 'FAILURE'
+			}
 		} else {
 			echo 'Failed code review...'
 			currentBuild.result = 'FAILURE'
