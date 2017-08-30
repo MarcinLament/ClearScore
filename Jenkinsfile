@@ -9,8 +9,29 @@ node {
 	}
 
 	if (branch_type == "feature") {
-		stage('FEATURE') {
-			echo 'Feature master'
+		stage('Checkout') {
+			echo 'Checking out code'
+		}
+		stage('Test') {
+			step('Unit Test') {
+				echo 'Unit testing...'
+			}
+			step('Instrumental Test') {
+				echo 'Android instumental testing...'
+			}
+			step('PR Review') {
+				def userInput = input(
+				id: 'Proceed1', message: 'Was this successful?', parameters: [
+				[$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'Please confirm you agree with this']
+				])
+				if(userInput) {
+					step('Deploy') {
+						echo 'Publishing to Fabric...'
+					}	
+				} else {
+					currentBuild.result = 'FAILURE'
+				}
+			}
 		}
 	}
 }
