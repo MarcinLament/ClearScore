@@ -13,7 +13,6 @@ node {
 			echo 'Checking out code'
 		}
 		stage('Test') {
-			steps {
         			parallel(
 					"Unit Test": {
 						echo 'Unit testing...'
@@ -22,7 +21,7 @@ node {
 						echo 'Android instumental testing...'
 					}
 				)
-			}
+		
 		}
 		stage('PR Review') {
 			echo 'Waiting for the input...'
