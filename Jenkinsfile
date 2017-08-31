@@ -34,8 +34,24 @@ node {
 				echo 'Publishing to Fabric...'
 			}
 			
-			currentBuild.result = 'FAILURE'
-			sh "exit -1"
+			def manualTestingResult
+			stage('Manual Testing') {
+				manualTestingResult = input(
+				id: 'Proceed2', message: 'Manual testing', parameters: [
+				[$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'Has passed manual testing??']
+				])
+			}
+			if(manualTestingResult) {
+				echo 'Notify developer'
+			} else {
+				def manualTestingComments = input(
+				 id: 'Proceed3', message: 'Reason for failing?', parameters: [
+				 [$class: 'TextParameterDefinition', defaultValue: '', description: 'Reason', name: 'failReason']
+				])
+				echo 'Failed manual testing review: ' + manualTestingComments
+				currentBuild.result = 'UNSTABLE'
+				sh "exit -1"
+			}
 		} else {
 			echo 'Failed code review...'
 			currentBuild.result = 'FAILURE'
