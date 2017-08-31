@@ -11,6 +11,7 @@ node {
 	if (branch_type == "feature") {
 		stage('Checkout') {
 			echo 'Checking out code'
+			checkout scm
 		}
 		stage('Test') {
 			parallel(
