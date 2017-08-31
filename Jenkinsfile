@@ -49,8 +49,7 @@ node {
 				 [$class: 'TextParameterDefinition', defaultValue: '', description: 'Reason', name: 'failReason']
 				])
 				echo 'Failed manual testing review: ' + manualTestingComments
-				currentBuild.result = 'UNSTABLE'
-				sh "exit -1"
+				currentBuild.result = 'FAILURE'
 			}
 		} else {
 			echo 'Failed code review...'
