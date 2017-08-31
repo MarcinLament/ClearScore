@@ -1,12 +1,17 @@
 def branch_type = get_branch_type "${env.BRANCH_NAME}"
 
 node {
-	if (branch_type == "feature") {
-		echo 'Feature pipeline'
+	if (branch_type == "master") {
+
+		stage('MASTER') {
+			echo 'Master pipeline'
+		}
 	}
 
 	if (branch_type == "feature") {
-		echo 'Feature master'
+		stage('FEATURE') {
+			echo 'Feature master'
+		}
 	}
 }
 
