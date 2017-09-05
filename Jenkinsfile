@@ -7,7 +7,7 @@ node {
 			echo 'Master pipeline'
 			sh "id -un"
 			sh "ruby -v"
-			sh "adb"
+			sh "bundle"
 		}
 	}
 
