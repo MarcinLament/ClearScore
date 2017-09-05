@@ -50,6 +50,11 @@ Build alpha release
 fastlane android deployToCrashytics
 ```
 Publishing to Crashlytics
+### android ensureCheckout
+```
+fastlane android ensureCheckout
+```
+Ensuring clean repository checkout
 ### android beta
 ```
 fastlane android beta

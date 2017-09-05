@@ -12,11 +12,13 @@ node {
 		stage('Checkout') {
 			echo 'Checking out code'
 			checkout scm
+			fastlane('ensureCheckout')
 		}
 		stage('Test') {
 			parallel(
 				"Unit Tests": {
 					echo 'Unit testing...'
+					fastlane('unitTest')
 				},
 				"Instrumented Tests": {
 					echo 'Android instrumented testing...'
@@ -60,6 +62,10 @@ node {
 }
 
 // Utility functions
+def fastlane(String command) {
+	sh "bundle exec fastlane " + command
+}
+
 def get_branch_type(String branch_name) {
     //Must be specified according to <flowInitContext> configuration of jgitflow-maven-plugin in pom.xml
     def dev_pattern = ".*development"

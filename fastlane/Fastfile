@@ -31,13 +31,27 @@ platform :android do
 # ======================================= Unit Test Lane =============================================
   desc "Runs all Unit tests"
   lane :unitTest do
-    gradle(task: "test")
+    begin
+      update_github_status("UnitTest", "Running tests", "pending")
+      gradle(task: "test")
+      update_github_status("UnitTest", "All tests passed", "success")
+    rescue => ex
+      update_github_status("UnitTest", "Testing failed", "failure")
+      exit(1)
+    end
   end
 
 # =================================== Intrumented Test Lane ==========================================
   desc "Runs all Instrumented tests"
   lane :instrumentedTest do
-    gradle(task: "connectedAndroidTest")
+    begin
+      update_github_status("IntrumentedTest", "Running tests", "pending")
+      gradle(task: "connectedAndroidTest")
+      update_github_status("IntrumentedTest", "All tests passed", "success")
+    rescue => ex
+      update_github_status("IntrumentedTest", "Testing failed", "failure")
+      exit(1)
+    end
   end
 
 # ======================================== Build Alpha ===============================================
@@ -62,10 +76,9 @@ platform :android do
     name.slice! "origin/"
     name.slice! "feature/"
 
-    c1 = sh("git merge-base @ origin/master")
-    c2 = sh("git rev-parse origin/master")
+    
 
-    if c1 == c2
+    if ensure_branch_up_to_date_with_source('master')
       puts "XXX: true"
     else
       puts "XXX: false"
@@ -85,6 +98,20 @@ platform :android do
     # )
   end
 
+
+# ======================================== Checkout ==================================================
+desc "Ensuring clean repository checkout"
+  lane :ensureCheckout do
+
+  parent_branch = "master"
+
+  # ensure_git_status_clean
+  if ensure_branch_up_to_date_with_source(parent_branch)
+    update_github_status("Checkout", "Up to date with #{parent_branch}", "success")
+  else
+    update_github_status("Checkout", "Outdated - merge in the #{parent_branch} branch first", "failed")
+  end
+end
 
 # ================================== Publish to Google Play ==========================================
 
@@ -132,14 +159,21 @@ end
 
 
 
+def ensure_branch_up_to_date_with_source(parent_branch)
+  # Get common ancestor of both branches
+  sha1 = sh("git merge-base @ origin/#{parent_branch}")
+  # Get the latest revision on the parent bnrach
+  sha2 = sh("git rev-parse origin/#{parent_branch}")
+  return sha1 == sha2
+end  
 
 def update_github_status(job_name, desc, state)
   github_job_status(
-    token: '7d852cc27ad1a45e8c224bffa015631774c2841e',
+    token: '5dd0cbc6d3e5bc5362e4894c1627359f46077530',
     owner: 'MarcinLament',
     repo: 'ClearScore',
     job_name: job_name,
-    build_url: 'http://www.skullcrushers.gov',
+    build_url: "#{ENV['BUILD_URL']}",
     description: desc,
     state: state
   )
