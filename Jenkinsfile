@@ -63,7 +63,7 @@ node {
 
 // Utility functions
 def fastlane(String command) {
-	sh "/Users/marcin/.rvm/rubies/ruby-2.4.1/wrappers/bundle exec fastlane " + command
+	sh "bundle exec fastlane " + command
 }
 
 def get_branch_type(String branch_name) {
