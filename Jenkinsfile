@@ -22,16 +22,7 @@ node {
 				"Unit Tests": {
 					echo 'Unit testing...'
 					fastlane('unitTest')
-					// junit "/module_name/build/reports/tests/"
-
-					publishHTML (target: [
-				      allowMissing: false,
-				      alwaysLinkToLastBuild: false,
-				      keepAll: true,
-				      reportDir: '/module_name/build/reports/tests/release',
-				      reportFiles: 'index.html',
-				      reportName: "RCov Report"
-				    ])
+					junit "/module_name/build/reports/tests/release/*.html"
 				},
 				"Instrumented Tests": {
 					echo 'Android instrumented testing...'
