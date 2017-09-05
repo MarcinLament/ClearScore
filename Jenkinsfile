@@ -22,7 +22,7 @@ node {
 				"Unit Tests": {
 					echo 'Unit testing...'
 					fastlane('unitTest')
-					sh "ls ${env.WORKSPACE}/app/build/reports/tests/release"
+					junit 'ls ${env.WORKSPACE}/app/build/test-results/**/*.xml'
 				},
 				"Instrumented Tests": {
 					echo 'Android instrumented testing...'
