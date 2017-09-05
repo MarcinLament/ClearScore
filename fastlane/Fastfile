@@ -28,6 +28,7 @@ platform :android do
   end
 
 
+
 # ======================================== Checkout ==================================================
 desc "Ensuring clean repository checkout"
   lane :ensureCheckout do
@@ -42,6 +43,7 @@ desc "Ensuring clean repository checkout"
     exit(1)
   end
 end
+
 
 # ======================================= Unit Test Lane =============================================
   desc "Runs all Unit tests"
@@ -169,10 +171,8 @@ def ensure_branch_up_to_date_with_source(parent_branch)
 end  
 
 def update_github_status(job_name, desc, state)
-  token = ENV['GITHUB_ACCESS_TOKEN']
-  puts "Token: " + token
   github_job_status(
-    token: "#{token}",
+    token: '29176f0b40c92a147304e12f8ca2622a7761d9b4',
     owner: 'MarcinLament',
     repo: 'ClearScore',
     job_name: job_name,
