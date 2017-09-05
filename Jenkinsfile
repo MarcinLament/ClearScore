@@ -65,8 +65,9 @@ node {
 			currentBuild.result = 'FAILURE'
 		}
 
-		archive "/app/build/test-results/release/TEST-lammar.com.csdemo.ui.showscore.ShowScorePresenterTest.xml"
-		junit "/app/build/test-results/release/TEST-lammar.com.csdemo.ui.showscore.ShowScorePresenterTest.xml"
+		// archive "/app/build/test-results/release/TEST-lammar.com.csdemo.ui.showscore.ShowScorePresenterTest.xml"
+		archiveArtifacts artifacts: '/app/build/test-results/release/TEST-lammar.com.csdemo.ui.showscore.ShowScorePresenterTest.xml', excludes: 'output/*.md'
+		// junit "/app/build/test-results/release/TEST-lammar.com.csdemo.ui.showscore.ShowScorePresenterTest.xml"
 		// junit "/Users/Shared/Jenkins/TEST-1.xml"
 	}
 }
