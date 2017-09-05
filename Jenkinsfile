@@ -7,7 +7,7 @@ node {
 			echo 'Master pipeline'
 			sh "id -un"
 			sh "ruby -v"
-			sh "fastlane"
+			sh "/usr/local/bin/bundle"
 		}
 	}
 
