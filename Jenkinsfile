@@ -65,7 +65,8 @@ node {
 			currentBuild.result = 'FAILURE'
 		}
 
-		junit '/app/build/test-results/release/TEST-*.xml'
+		// junit '/app/build/test-results/release/TEST-*.xml'
+		junit '/Users/Shared/Jenkins/TEST-1.xml'
 	}
 }
 
