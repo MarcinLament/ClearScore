@@ -62,8 +62,8 @@ platform :android do
     name.slice! "origin/"
     name.slice! "feature/"
 
-    c1 = sh("git merge-base @ master")
-    c2 = sh("git rev-parse @")
+    c1 = sh("git merge-base @ origin/master")
+    c2 = sh("git rev-parse origin/master")
 
     if c1 == c2
       puts "XXX: true"
