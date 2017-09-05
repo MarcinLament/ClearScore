@@ -5,6 +5,7 @@ node {
 
 		stage('MASTER') {
 			echo 'Master pipeline'
+			sh "which ruby"
 		}
 	}
 
