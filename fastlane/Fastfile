@@ -182,6 +182,7 @@ def update_github_status(job_name, desc, state)
   )
 end
 
+
 def change_log_since_last_tag(build_type)
   # http://git-scm.com/docs/pretty-formats
   # <short hash> <commit title>
