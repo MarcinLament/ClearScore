@@ -5,7 +5,9 @@ node {
 
 		stage('MASTER') {
 			echo 'Master pipeline'
-			sh "which ruby"
+			sh "id -un"
+			sh "ruby -v"
+			sh "adb"
 		}
 	}
 
