@@ -99,7 +99,7 @@ public class ShowScorePresenterTest {
         when(clearScoreService.getScore()).thenReturn(Observable.just(new CreditScore()));
 
         //When get score is requested
-        showScorePresenter.getScore();
+//        showScorePresenter.getScore();
 
         //Then no score error is shown
         verify(showScoreView).showNoScoreError();
