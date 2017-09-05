@@ -9,6 +9,8 @@
 # If you want to automatically update fastlane if a new version is available:
 # update_fastlane
 
+opt_out_crash_reporting
+
 # If you want to automatically update fastlane if a new version is available:
 update_fastlane
 
@@ -109,7 +111,7 @@ desc "Ensuring clean repository checkout"
   if ensure_branch_up_to_date_with_source(parent_branch)
     update_github_status("Checkout", "Up to date with #{parent_branch}", "success")
   else
-    update_github_status("Checkout", "Outdated - merge in the #{parent_branch} branch first", "failed")
+    update_github_status("Checkout", "Outdated - merge in the #{parent_branch} branch first", "failure")
   end
 end
 
