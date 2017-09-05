@@ -172,7 +172,7 @@ end
 
 def update_github_status(job_name, desc, state)
   github_job_status(
-    token: '29176f0b40c92a147304e12f8ca2622a7761d9b4',
+    token: ENV['GITHUB_ACCESS_TOKEN'],
     owner: 'MarcinLament',
     repo: 'ClearScore',
     job_name: job_name,
