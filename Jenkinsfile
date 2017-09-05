@@ -65,8 +65,8 @@ node {
 			currentBuild.result = 'FAILURE'
 		}
 
-		// junit '/app/build/test-results/release/TEST-*.xml'
-		junit '/Users/Shared/Jenkins/TEST-1.xml'
+		junit "/app/build/test-results/release/TEST-lammar.com.csdemo.ui.showscore.ShowScorePresenterTest.xml"
+		// junit "/Users/Shared/Jenkins/TEST-1.xml"
 	}
 }
 
