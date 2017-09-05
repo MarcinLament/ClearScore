@@ -22,7 +22,7 @@ node {
 				"Unit Tests": {
 					echo 'Unit testing...'
 					fastlane('unitTest')
-					junit "/module_name/build/reports/tests/release/*.html"
+					junit "/app/build/reports/tests/release/*.html"
 				},
 				"Instrumented Tests": {
 					echo 'Android instrumented testing...'
