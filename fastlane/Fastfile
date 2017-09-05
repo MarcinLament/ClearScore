@@ -9,6 +9,9 @@
 # If you want to automatically update fastlane if a new version is available:
 # update_fastlane
 
+# If you want to automatically update fastlane if a new version is available:
+update_fastlane
+
 # This is the minimum version number required.
 # Update this, if you use features of a newer version
 fastlane_version "2.54.4"
@@ -17,13 +20,75 @@ default_platform :android
 
 platform :android do
   before_all do
+    ENV["CRASHLYTICS_API_TOKEN"] = "d1c91d54e078676f5a4cce31c32487999141a193"
+    ENV["CRASHLYTICS_BUILD_SECRET"] = "87674eca32e08647cd65145b9c3be026f1649e98623bf6ac0a684fc4c823add0"
     # ENV["SLACK_URL"] = "https://hooks.slack.com/services/..."
   end
 
-  desc "Runs all the tests"
-  lane :test do
+
+
+
+# ======================================= Unit Test Lane =============================================
+  desc "Runs all Unit tests"
+  lane :unitTest do
     gradle(task: "test")
   end
+
+# =================================== Intrumented Test Lane ==========================================
+  desc "Runs all Instrumented tests"
+  lane :instrumentedTest do
+    gradle(task: "connectedAndroidTest")
+  end
+
+# ======================================== Build Alpha ===============================================
+  desc "Build alpha release"
+  lane :alpha do
+    gradle(task: "assembleRelease")
+    # crashlytics
+  end
+
+# ===================================== Build Production =============================================
+
+
+
+# ================================== Publish to Crashlytics ==========================================
+  desc "Publishing to Crashlytics"
+  lane :deployToCrashytics do
+
+    ensure_git_branch(branch: 'feature\/.+')
+    # ensure_git_status_clean
+
+    name = git_branch.dup
+    name.slice! "origin/"
+    name.slice! "feature/"
+
+    c1 = sh("git merge-base @ master")
+    c2 = sh("git rev-parse @")
+
+    if c1 == c2
+      puts "XXX: true"
+    else
+      puts "XXX: false"
+    end
+    
+
+    # update_github_status('test1','description 1','success')
+
+    # gradle(task: "clean")
+
+    # badge --shield "Version-0.0.3-blue" --dark --shield_geometry "+0+25%" --shield_scale 0.75
+
+    # badge(shield: "CS-2132-orange", no_badge: true)
+    # gradle(task: "assembleRelease")
+    # crashlytics(
+    #   notes: change_log_since_last_tag('alpha')
+    # )
+  end
+
+
+# ================================== Publish to Google Play ==========================================
+
+
 
   desc "Submit a new Beta Build to Crashlytics Beta"
   lane :beta do
@@ -64,3 +129,24 @@ end
 
 # fastlane reports which actions are used. No personal data is recorded. 
 # Learn more at https://github.com/fastlane/fastlane#metrics
+
+
+
+
+def update_github_status(job_name, desc, state)
+  github_job_status(
+    token: '7d852cc27ad1a45e8c224bffa015631774c2841e',
+    owner: 'MarcinLament',
+    repo: 'ClearScore',
+    job_name: job_name,
+    build_url: 'http://www.skullcrushers.gov',
+    description: desc,
+    state: state
+  )
+end
+
+def change_log_since_last_tag(build_type)
+  # http://git-scm.com/docs/pretty-formats
+  # <short hash> <commit title>
+  return changelog_from_git_commits(pretty: '%h %s', tag_match_pattern: "#{build_type}/*")
+end
