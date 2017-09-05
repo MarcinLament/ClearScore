@@ -24,7 +24,7 @@ node {
 					fastlane('unitTest')
 					// sh "Getting test test-results: ${env.WORKSPACE}/app/build/test-results/release/*.xml"
 					// junit '/app/build/test-results/release/TEST-*.xml'
-					publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: false, reportDir: '/app/build/reports/tests/release', reportFiles: 'index.html', reportName: 'Unit Test Report', reportTitles: ''])
+					// publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: false, reportDir: '/app/build/reports/tests/release', reportFiles: 'index.html', reportName: 'Unit Test Report', reportTitles: ''])
 				},
 				"Instrumented Tests": {
 					echo 'Android instrumented testing...'
@@ -66,6 +66,12 @@ node {
 		}
 	}
 }
+
+post {
+      always {
+        junit '/app/build/test-results/release/TEST-*.xml'
+      }
+   }
 
 // Utility functions
 def fastlane(String command) {
