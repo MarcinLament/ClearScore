@@ -22,6 +22,8 @@ node {
 				"Unit Tests": {
 					echo 'Unit testing...'
 					// fastlane('unitTest')
+
+					archiveArtifacts artifacts: 'app/build/outputs/apk/*.apk', fingerprint: true
 					// sh "Getting test test-results: ${env.WORKSPACE}/app/build/test-results/release/*.xml"
 					// junit '/app/build/test-results/release/TEST-*.xml'
 					// publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: false, reportDir: '/app/build/reports/tests/release', reportFiles: 'index.html', reportName: 'Unit Test Report', reportTitles: ''])
@@ -66,7 +68,7 @@ node {
 		}
 
 		// archive "/app/build/test-results/release/TEST-lammar.com.csdemo.ui.showscore.ShowScorePresenterTest.xml"
-		archiveArtifacts artifacts: '/app/build/test-results/release/TEST-lammar.com.csdemo.ui.showscore.ShowScorePresenterTest.xml', excludes: 'output/*.md'
+		// archiveArtifacts artifacts: '/app/build/test-results/release/TEST-lammar.com.csdemo.ui.showscore.ShowScorePresenterTest.xml', excludes: 'output/*.md'
 		// junit "/app/build/test-results/release/TEST-lammar.com.csdemo.ui.showscore.ShowScorePresenterTest.xml"
 		// junit "/Users/Shared/Jenkins/TEST-1.xml"
 	}
