@@ -28,7 +28,20 @@ platform :android do
   end
 
 
+# ======================================== Checkout ==================================================
+desc "Ensuring clean repository checkout"
+  lane :ensureCheckout do
 
+  parent_branch = "master"
+
+  # ensure_git_status_clean
+  if ensure_branch_up_to_date_with_source(parent_branch)
+    update_github_status("Checkout", "Up to date with #{parent_branch}", "success")
+  else
+    update_github_status("Checkout", "Outdated - merge in the #{parent_branch} branch first", "failure")
+    exit(1)
+  end
+end
 
 # ======================================= Unit Test Lane =============================================
   desc "Runs all Unit tests"
@@ -101,20 +114,6 @@ platform :android do
   end
 
 
-# ======================================== Checkout ==================================================
-desc "Ensuring clean repository checkout"
-  lane :ensureCheckout do
-
-  parent_branch = "master"
-
-  # ensure_git_status_clean
-  if ensure_branch_up_to_date_with_source(parent_branch)
-    update_github_status("Checkout", "Up to date with #{parent_branch}", "success")
-  else
-    update_github_status("Checkout", "Outdated - merge in the #{parent_branch} branch first", "failure")
-  end
-end
-
 # ================================== Publish to Google Play ==========================================
 
 
@@ -171,7 +170,7 @@ end
 
 def update_github_status(job_name, desc, state)
   github_job_status(
-    token: '5dd0cbc6d3e5bc5362e4894c1627359f46077530',
+    token: "#{ENV['GITHUB_ACCESS_TOKEN']}",
     owner: 'MarcinLament',
     repo: 'ClearScore',
     job_name: job_name,
