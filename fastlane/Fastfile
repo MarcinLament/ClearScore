@@ -172,7 +172,7 @@ def update_github_status(job_name, desc, state)
   token = ENV['GITHUB_ACCESS_TOKEN']
   puts "Token: " + token
   github_job_status(
-    token: token,
+    token: "#{token}",
     owner: 'MarcinLament',
     repo: 'ClearScore',
     job_name: job_name,
