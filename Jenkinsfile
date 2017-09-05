@@ -22,8 +22,8 @@ node {
 				"Unit Tests": {
 					echo 'Unit testing...'
 					// fastlane('unitTest')
-
-					archiveArtifacts artifacts: 'app/build/outputs/apk/*.apk', fingerprint: true
+					sh 'pwd'
+					// archiveArtifacts artifacts: 'app/build/outputs/apk/*.apk', fingerprint: true
 					// sh "Getting test test-results: ${env.WORKSPACE}/app/build/test-results/release/*.xml"
 					// junit '/app/build/test-results/release/TEST-*.xml'
 					// publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: false, reportDir: '/app/build/reports/tests/release', reportFiles: 'index.html', reportName: 'Unit Test Report', reportTitles: ''])
