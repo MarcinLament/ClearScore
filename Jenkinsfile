@@ -21,10 +21,10 @@ node {
 			parallel(
 				"Unit Tests": {
 					echo 'Unit testing...'
-					sh 'pwd'
-					sh 'ls -a'
-					// sh "./gradlew clean build"
-					// step([$class: "JUnitResultArchiver", testResults: "build/**/TEST-*.xml"])
+					// sh 'pwd'
+					// sh 'ls -a'
+					sh "./gradlew test"
+					step([$class: "JUnitResultArchiver", testResults: "app/build/**/TEST-*.xml"])
 					// fastlane('unitTest')
 
 					// archiveArtifacts artifacts: 'app/build/outputs/apk/*.apk', fingerprint: true
