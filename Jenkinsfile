@@ -24,22 +24,24 @@ if (branch_type == "feature") {
 	stage('Test') {
 		parallel (
 			"Unit Tests" : { 
-				// node { 
-				// 	deleteDir()
+				node { 
+					deleteDir()
+					unstash 'repo'
 				// 	try {
 				// 		fastlane('unitTest')
 				// 	} catch (ex) {}
 				// 	step([$class: "JUnitResultArchiver", testResults: "app/build/test-results/release/TEST-*.xml"])
-				// } 
+				} 
 			},
 			"Instrumented Tests" : { 
-				// node {
-				// 	deleteDir()
+				node {
+					deleteDir()
+					unstash 'repo'
 				// 	try {
 				// 		fastlane('instrumentedTest')
 				// 	} catch (ex) {}
 				// 	step([$class: "JUnitResultArchiver", testResults: "app/build/outputs/androidTest-results/connected/TEST-*.xml"])
-				// }
+				}
 			}
 		)
 	}
