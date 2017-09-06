@@ -19,23 +19,39 @@ node {
 
 			// sh "$ANDROID_HOME/emulator/emulator @Nexus-5_API-25 -memory 2048 -wipe-data -no-window"
 		}
-		stage('Test') {
-			parallel(
-				"Unit Tests": {
-					echo 'Unit testing...'
-					try {
-						fastlane('unitTest')
-					} catch (ex) {}
-					step([$class: "JUnitResultArchiver", testResults: "app/build/test-results/release/TEST-*.xml"])
-				},
-				"Instrumented Tests": {
-					echo 'Android instrumented testing...'
-					try {
-						fastlane('instrumentedTest')
-					} catch (ex) {}
-					step([$class: "JUnitResultArchiver", testResults: "app/build/outputs/androidTest-results/connected/TEST-*.xml"])
-				}
-			)
+		// stage('Test') {
+		// 	parallel(
+		// 		"Unit Tests": {
+		// 			echo 'Unit testing...'
+		// 			try {
+		// 				fastlane('unitTest')
+		// 			} catch (ex) {}
+		// 			step([$class: "JUnitResultArchiver", testResults: "app/build/test-results/release/TEST-*.xml"])
+		// 		},
+		// 		"Instrumented Tests": {
+		// 			echo 'Android instrumented testing...'
+		// 			try {
+		// 				fastlane('instrumentedTest')
+		// 			} catch (ex) {}
+		// 			step([$class: "JUnitResultArchiver", testResults: "app/build/outputs/androidTest-results/connected/TEST-*.xml"])
+		// 		}
+		// 	)
+		// }
+
+		stage('Unit Tests') {
+			echo 'Unit testing...'
+			try {
+				fastlane('unitTest')
+			} catch (ex) {}
+			step([$class: "JUnitResultArchiver", testResults: "app/build/test-results/release/TEST-*.xml"])
+		}
+		stage('Instrumented Tests') {
+			echo 'Android instrumented testing...'
+			try {
+				fastlane('instrumentedTest')
+			} catch (ex) {}
+			step([$class: "JUnitResultArchiver", testResults: "app/build/outputs/androidTest-results/connected/TEST-*.xml"])
+
 		}
 		def userInput
 		stage('PR Review') {
