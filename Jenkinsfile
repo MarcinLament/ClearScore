@@ -42,8 +42,8 @@ node {
 			parallel (
 				"Unit Tests" : { 
 					node { 
-						echo "pwd"
-						echo "ls -a"
+						sh "pwd"
+						sh "ls -a"
 						echo 'Unit testing...'
 						try {
 							fastlane('unitTest')
