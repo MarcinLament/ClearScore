@@ -17,7 +17,7 @@ node {
 			checkout scm
 			fastlane('ensureCheckout')
 
-			stash includes: 'app/*', name: 'repo'
+			stash 'repo'
     		// stash name: 'repo', useDefaultExcludes: false
 
 			// sh "$ANDROID_HOME/emulator/emulator @Nexus-5_API-25 -memory 2048 -wipe-data -no-window"
@@ -45,6 +45,7 @@ node {
 			parallel (
 				"Unit Tests" : { 
 					node { 
+						deleteDir()
 						unstash 'repo'
 						sh "pwd"
 						sh "ls -a"
@@ -57,6 +58,7 @@ node {
 				},
 				"Instrumented Tests" : { 
 					node {
+						deleteDir()
 						unstash 'repo'
 						sh "pwd"
 						sh "ls -a"
