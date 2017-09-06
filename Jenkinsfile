@@ -58,15 +58,15 @@ node {
 				},
 				"Instrumented Tests" : { 
 					node {
-						deleteDir()
-						unstash 'repo'
-						sh "pwd"
-						sh "ls -a"
+						// deleteDir()
+						// unstash 'repo'
+						// sh "pwd"
+						// sh "ls -a"
 						echo 'Android instrumented testing...'
-						try {
-							fastlane('instrumentedTest')
-						} catch (ex) {}
-						step([$class: "JUnitResultArchiver", testResults: "app/build/outputs/androidTest-results/connected/TEST-*.xml"])
+						// try {
+						// 	fastlane('instrumentedTest')
+						// } catch (ex) {}
+						// step([$class: "JUnitResultArchiver", testResults: "app/build/outputs/androidTest-results/connected/TEST-*.xml"])
 					}
 				}
 			)
