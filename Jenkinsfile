@@ -17,6 +17,8 @@ node {
 			checkout scm
 			fastlane('ensureCheckout')
 
+    		stash name: 'repo', useDefaultExcludes: false
+
 			// sh "$ANDROID_HOME/emulator/emulator @Nexus-5_API-25 -memory 2048 -wipe-data -no-window"
 		}
 		// stage('Test') {
@@ -42,6 +44,7 @@ node {
 			parallel (
 				"Unit Tests" : { 
 					node { 
+						unstash 'repo'
 						sh "pwd"
 						sh "ls -a"
 						echo 'Unit testing...'
@@ -53,6 +56,9 @@ node {
 				},
 				"Instrumented Tests" : { 
 					node {
+						unstash 'repo'
+						sh "pwd"
+						sh "ls -a"
 						echo 'Android instrumented testing...'
 						try {
 							fastlane('instrumentedTest')
