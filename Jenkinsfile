@@ -20,7 +20,7 @@ node {
 		stage('Test') {
 			parallel(
 				launchEmulator: {
-					sh "emulator @Nexus-5_API-25 -memory 2048 -wipe-data"
+					sh "$ANDROID_HOME/emulator/emulator @Nexus-5_API-25 -memory 2048 -wipe-data"
 				},
 				"Unit Tests": {
 					echo 'Unit testing...'
