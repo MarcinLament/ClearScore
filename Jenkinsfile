@@ -21,20 +21,17 @@ node {
 			parallel(
 				"Unit Tests": {
 					echo 'Unit testing...'
-					try {
-						fastlane('unitTest')
-					} catch (ex) {}
-					step([$class: "JUnitResultArchiver", testResults: "app/build/test-results/release/TEST-*.xml"])
-
-					// archiveArtifacts artifacts: 'app/build/outputs/apk/*.apk', fingerprint: true
-					// sh "Getting test test-results: ${env.WORKSPACE}/app/build/test-results/release/*.xml"
-					// step([$class: 'JUnitResultArchiver', testResults: '/app/build/test-results/release/TEST-*.xml', healthScaleFactor: 1.0])
-
-					// junit '/app/build/test-results/release/TEST-*.xml'
-					// publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: false, reportDir: '/app/build/reports/tests/release', reportFiles: 'index.html', reportName: 'Unit Test Report', reportTitles: ''])
+					// try {
+					// 	fastlane('unitTest')
+					// } catch (ex) {}
+					// step([$class: "JUnitResultArchiver", testResults: "app/build/test-results/release/TEST-*.xml"])
 				},
 				"Instrumented Tests": {
 					echo 'Android instrumented testing...'
+					try {
+						fastlane('instrumentedTest')
+					} catch (ex) {}
+					step([$class: "JUnitResultArchiver", testResults: "app/build/outputs/androidTest-results/connected/release/TEST-*.xml"])
 				}
 			)
 		}
