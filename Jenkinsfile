@@ -16,18 +16,17 @@ node {
 			echo 'Checking out code'
 			checkout scm
 			fastlane('ensureCheckout')
+
+			// sh "$ANDROID_HOME/emulator/emulator @Nexus-5_API-25 -memory 2048 -wipe-data -no-window"
 		}
 		stage('Test') {
 			parallel(
-				launchEmulator: {
-					sh "$ANDROID_HOME/emulator/emulator @Nexus-5_API-25 -memory 2048 -wipe-data -no-window"
-				},
 				"Unit Tests": {
 					echo 'Unit testing...'
-					// try {
-					// 	fastlane('unitTest')
-					// } catch (ex) {}
-					// step([$class: "JUnitResultArchiver", testResults: "app/build/test-results/release/TEST-*.xml"])
+					try {
+						fastlane('unitTest')
+					} catch (ex) {}
+					step([$class: "JUnitResultArchiver", testResults: "app/build/test-results/release/TEST-*.xml"])
 				},
 				"Instrumented Tests": {
 					echo 'Android instrumented testing...'
