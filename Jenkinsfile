@@ -24,7 +24,7 @@ node {
 					try {
 						fastlane('unitTest')
 					} catch (ex) {}
-					step([$class: "JUnitResultArchiver", testResults: "app/build/reports/tests/release/TEST-*.xml"])
+					step([$class: "JUnitResultArchiver", testResults: "app/build/reports/test-results/TEST-*.xml"])
 
 					// archiveArtifacts artifacts: 'app/build/outputs/apk/*.apk', fingerprint: true
 					// sh "Getting test test-results: ${env.WORKSPACE}/app/build/test-results/release/*.xml"
