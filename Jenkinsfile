@@ -38,26 +38,30 @@ node {
 		// 	)
 		// }
 
-		parallel (
-		"Unit Tests" : { 
-			node { 
-				echo 'Unit testing...'
-				try {
-					fastlane('unitTest')
-				} catch (ex) {}
-				step([$class: "JUnitResultArchiver", testResults: "app/build/test-results/release/TEST-*.xml"])
-			} 
-		},
-		"Instrumented Tests" : { 
-			node {
-				echo 'Android instrumented testing...'
-				try {
-					fastlane('instrumentedTest')
-				} catch (ex) {}
-				step([$class: "JUnitResultArchiver", testResults: "app/build/outputs/androidTest-results/connected/TEST-*.xml"])
-			}
+		stage('Test') {
+			parallel (
+				"Unit Tests" : { 
+					node { 
+						echo "pwd"
+						echo "ls -a"
+						echo 'Unit testing...'
+						try {
+							fastlane('unitTest')
+						} catch (ex) {}
+						step([$class: "JUnitResultArchiver", testResults: "app/build/test-results/release/TEST-*.xml"])
+					} 
+				},
+				"Instrumented Tests" : { 
+					node {
+						echo 'Android instrumented testing...'
+						try {
+							fastlane('instrumentedTest')
+						} catch (ex) {}
+						step([$class: "JUnitResultArchiver", testResults: "app/build/outputs/androidTest-results/connected/TEST-*.xml"])
+					}
+				}
+			)
 		}
-		)
 
 		// stage('Unit Tests') {
 		// 	echo 'Unit testing...'
