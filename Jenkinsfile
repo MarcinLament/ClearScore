@@ -49,11 +49,11 @@ node {
 						unstash 'repo'
 						sh "pwd"
 						sh "ls -a"
-						// echo 'Unit testing...'
-						// try {
-						// 	fastlane('unitTest')
-						// } catch (ex) {}
-						// step([$class: "JUnitResultArchiver", testResults: "app/build/test-results/release/TEST-*.xml"])
+						echo 'Unit testing...'
+						try {
+							fastlane('unitTest')
+						} catch (ex) {}
+						step([$class: "JUnitResultArchiver", testResults: "app/build/test-results/release/TEST-*.xml"])
 					} 
 				},
 				"Instrumented Tests" : { 
@@ -62,11 +62,11 @@ node {
 						unstash 'repo'
 						sh "pwd"
 						sh "ls -a"
-						// echo 'Android instrumented testing...'
-						// try {
-						// 	fastlane('instrumentedTest')
-						// } catch (ex) {}
-						// step([$class: "JUnitResultArchiver", testResults: "app/build/outputs/androidTest-results/connected/TEST-*.xml"])
+						echo 'Android instrumented testing...'
+						try {
+							fastlane('instrumentedTest')
+						} catch (ex) {}
+						step([$class: "JUnitResultArchiver", testResults: "app/build/outputs/androidTest-results/connected/TEST-*.xml"])
 					}
 				}
 			)
