@@ -21,13 +21,10 @@ node {
 			parallel(
 				"Unit Tests": {
 					echo 'Unit testing...'
-					// sh 'pwd'
-					// sh 'ls -a'
 					try {
-						sh "./gradlew test"
+						fastlane('unitTest')
 					} catch (ex) {}
 					step([$class: "JUnitResultArchiver", testResults: "app/build/**/TEST-*.xml"])
-					// fastlane('unitTest')
 
 					// archiveArtifacts artifacts: 'app/build/outputs/apk/*.apk', fingerprint: true
 					// sh "Getting test test-results: ${env.WORKSPACE}/app/build/test-results/release/*.xml"
