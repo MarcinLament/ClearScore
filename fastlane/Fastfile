@@ -49,7 +49,7 @@ end
   desc "Runs all Unit tests"
   lane :unitTest do
     begin
-      # update_github_status("UnitTest", "Running tests", "pending")
+      update_github_status("UnitTest", "Running tests", "pending")
       gradle(task: "test")
       # update_github_status("UnitTest", "All tests passed", "success")
     rescue => ex
