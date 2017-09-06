@@ -45,7 +45,7 @@ node {
 			parallel (
 				"Unit Tests" : { 
 					node { 
-						ws {
+						lock('lock') {
 							unstash 'repo'
 							sh "pwd"
 							sh "ls -a"
@@ -59,7 +59,7 @@ node {
 				},
 				"Instrumented Tests" : { 
 					node {
-						ws {
+						lock('lock') {
 							unstash 'repo'
 							sh "pwd"
 							sh "ls -a"
