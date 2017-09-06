@@ -15,6 +15,7 @@ if (branch_type == "feature") {
 	node {
 		stage('Checkout') {
 			echo 'Checking out code'
+			deleteDir()
 			checkout scm
 			fastlane('ensureCheckout')
 
