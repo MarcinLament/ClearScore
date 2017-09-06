@@ -53,6 +53,7 @@ end
       gradle(task: "test")
       # update_github_status("UnitTest", "All tests passed", "success")
     rescue => ex
+      puts "Error: " + ex
       # update_github_status("UnitTest", "Testing failed", "failure")
       exit(1)
     end
