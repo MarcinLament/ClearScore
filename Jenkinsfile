@@ -17,8 +17,8 @@ node {
 			checkout scm
 			fastlane('ensureCheckout')
 
-			stash includes: 'Gemfile', name: 'repo'
-    		// stash name: 'repo', useDefaultExcludes: false
+			// stash includes: 'Gemfile', name: 'repo'
+    		stash name: 'repo', useDefaultExcludes: false
 
 			// sh "$ANDROID_HOME/emulator/emulator @Nexus-5_API-25 -memory 2048 -wipe-data -no-window"
 		}
@@ -45,26 +45,30 @@ node {
 			parallel (
 				"Unit Tests" : { 
 					node { 
-						unstash 'repo'
-						sh "pwd"
-						sh "ls -a"
-						// echo 'Unit testing...'
-						// try {
-						// 	fastlane('unitTest')
-						// } catch (ex) {}
-						// step([$class: "JUnitResultArchiver", testResults: "app/build/test-results/release/TEST-*.xml"])
+						ws {
+							unstash 'repo'
+							sh "pwd"
+							sh "ls -a"
+							// echo 'Unit testing...'
+							// try {
+							// 	fastlane('unitTest')
+							// } catch (ex) {}
+							// step([$class: "JUnitResultArchiver", testResults: "app/build/test-results/release/TEST-*.xml"])
+						}
 					} 
 				},
 				"Instrumented Tests" : { 
 					node {
-						unstash 'repo'
-						sh "pwd"
-						sh "ls -a"
-						// echo 'Android instrumented testing...'
-						// try {
-						// 	fastlane('instrumentedTest')
-						// } catch (ex) {}
-						// step([$class: "JUnitResultArchiver", testResults: "app/build/outputs/androidTest-results/connected/TEST-*.xml"])
+						ws {
+							unstash 'repo'
+							sh "pwd"
+							sh "ls -a"
+							// echo 'Android instrumented testing...'
+							// try {
+							// 	fastlane('instrumentedTest')
+							// } catch (ex) {}
+							// step([$class: "JUnitResultArchiver", testResults: "app/build/outputs/androidTest-results/connected/TEST-*.xml"])
+						}
 					}
 				}
 			)
