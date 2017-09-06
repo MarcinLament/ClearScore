@@ -38,21 +38,42 @@ node {
 		// 	)
 		// }
 
-		stage('Unit Tests') {
-			echo 'Unit testing...'
-			try {
-				fastlane('unitTest')
-			} catch (ex) {}
-			step([$class: "JUnitResultArchiver", testResults: "app/build/test-results/release/TEST-*.xml"])
+		parallel (
+		"Unit Tests" : { 
+			node { 
+				echo 'Unit testing...'
+				try {
+					fastlane('unitTest')
+				} catch (ex) {}
+				step([$class: "JUnitResultArchiver", testResults: "app/build/test-results/release/TEST-*.xml"])
+			} 
+		},
+		"Instrumented Tests" : { 
+			node {
+				echo 'Android instrumented testing...'
+				try {
+					fastlane('instrumentedTest')
+				} catch (ex) {}
+				step([$class: "JUnitResultArchiver", testResults: "app/build/outputs/androidTest-results/connected/TEST-*.xml"])
+			}
 		}
-		stage('Instrumented Tests') {
-			echo 'Android instrumented testing...'
-			try {
-				fastlane('instrumentedTest')
-			} catch (ex) {}
-			step([$class: "JUnitResultArchiver", testResults: "app/build/outputs/androidTest-results/connected/TEST-*.xml"])
+		)
 
-		}
+		// stage('Unit Tests') {
+		// 	echo 'Unit testing...'
+		// 	try {
+		// 		fastlane('unitTest')
+		// 	} catch (ex) {}
+		// 	step([$class: "JUnitResultArchiver", testResults: "app/build/test-results/release/TEST-*.xml"])
+		// }
+		// stage('Instrumented Tests') {
+		// 	echo 'Android instrumented testing...'
+		// 	try {
+		// 		fastlane('instrumentedTest')
+		// 	} catch (ex) {}
+		// 	step([$class: "JUnitResultArchiver", testResults: "app/build/outputs/androidTest-results/connected/TEST-*.xml"])
+
+		// }
 		def userInput
 		stage('PR Review') {
 			userInput = input(
