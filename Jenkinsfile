@@ -1,92 +1,96 @@
 def branch_type = get_branch_type "${env.BRANCH_NAME}"
 
-node {
-	if (branch_type == "master") {
+if (branch_type == "master") {
 
-		stage('MASTER') {
-			echo 'Master pipeline'
-			sh "id -un"
-			sh "ruby -v"
-			sh "bundle"
-		}
+	stage('MASTER') {
+		echo 'Master pipeline'
+		sh "id -un"
+		sh "ruby -v"
+		sh "bundle"
 	}
+}
 
-	if (branch_type == "feature") {
+if (branch_type == "feature") {
+
+	node {
 		stage('Checkout') {
 			echo 'Checking out code'
 			checkout scm
 			fastlane('ensureCheckout')
 
 			// stash 'repo'
-    		stash name: 'repo', useDefaultExcludes: false
+			stash name: 'repo', useDefaultExcludes: false
 
 			// sh "$ANDROID_HOME/emulator/emulator @Nexus-5_API-25 -memory 2048 -wipe-data -no-window"
 		}
-		// stage('Test') {
-		// 	parallel(
-		// 		"Unit Tests": {
-		// 			echo 'Unit testing...'
-		// 			try {
-		// 				fastlane('unitTest')
-		// 			} catch (ex) {}
-		// 			step([$class: "JUnitResultArchiver", testResults: "app/build/test-results/release/TEST-*.xml"])
-		// 		},
-		// 		"Instrumented Tests": {
-		// 			echo 'Android instrumented testing...'
-		// 			try {
-		// 				fastlane('instrumentedTest')
-		// 			} catch (ex) {}
-		// 			step([$class: "JUnitResultArchiver", testResults: "app/build/outputs/androidTest-results/connected/TEST-*.xml"])
-		// 		}
-		// 	)
-		// }
+	}
+	// stage('Test') {
+	// 	parallel(
+	// 		"Unit Tests": {
+	// 			echo 'Unit testing...'
+	// 			try {
+	// 				fastlane('unitTest')
+	// 			} catch (ex) {}
+	// 			step([$class: "JUnitResultArchiver", testResults: "app/build/test-results/release/TEST-*.xml"])
+	// 		},
+	// 		"Instrumented Tests": {
+	// 			echo 'Android instrumented testing...'
+	// 			try {
+	// 				fastlane('instrumentedTest')
+	// 			} catch (ex) {}
+	// 			step([$class: "JUnitResultArchiver", testResults: "app/build/outputs/androidTest-results/connected/TEST-*.xml"])
+	// 		}
+	// 	)
+	// }
 
-		stage('Test') {
-			parallel (
-				"Unit Tests" : { 
-					node { 
-						deleteDir()
-						unstash 'repo'
-						sh "pwd"
-						sh "ls -a"
-						echo 'Unit testing...'
-						try {
-							fastlane('unitTest')
-						} catch (ex) {}
-						step([$class: "JUnitResultArchiver", testResults: "app/build/test-results/release/TEST-*.xml"])
-					} 
-				},
-				"Instrumented Tests" : { 
-					node {
-						deleteDir()
-						unstash 'repo'
-						sh "pwd"
-						sh "ls -a"
-						echo 'Android instrumented testing...'
-						try {
-							fastlane('instrumentedTest')
-						} catch (ex) {}
-						step([$class: "JUnitResultArchiver", testResults: "app/build/outputs/androidTest-results/connected/TEST-*.xml"])
-					}
+	stage('Test') {
+		parallel (
+			"Unit Tests" : { 
+				node { 
+					deleteDir()
+					unstash 'repo'
+					sh "pwd"
+					sh "ls -a"
+					echo 'Unit testing...'
+					try {
+						fastlane('unitTest')
+					} catch (ex) {}
+					step([$class: "JUnitResultArchiver", testResults: "app/build/test-results/release/TEST-*.xml"])
+				} 
+			},
+			"Instrumented Tests" : { 
+				node {
+					deleteDir()
+					unstash 'repo'
+					sh "pwd"
+					sh "ls -a"
+					echo 'Android instrumented testing...'
+					try {
+						fastlane('instrumentedTest')
+					} catch (ex) {}
+					step([$class: "JUnitResultArchiver", testResults: "app/build/outputs/androidTest-results/connected/TEST-*.xml"])
 				}
-			)
-		}
+			}
+		)
+	}
 
-		// stage('Unit Tests') {
-		// 	echo 'Unit testing...'
-		// 	try {
-		// 		fastlane('unitTest')
-		// 	} catch (ex) {}
-		// 	step([$class: "JUnitResultArchiver", testResults: "app/build/test-results/release/TEST-*.xml"])
-		// }
-		// stage('Instrumented Tests') {
-		// 	echo 'Android instrumented testing...'
-		// 	try {
-		// 		fastlane('instrumentedTest')
-		// 	} catch (ex) {}
-		// 	step([$class: "JUnitResultArchiver", testResults: "app/build/outputs/androidTest-results/connected/TEST-*.xml"])
+	// stage('Unit Tests') {
+	// 	echo 'Unit testing...'
+	// 	try {
+	// 		fastlane('unitTest')
+	// 	} catch (ex) {}
+	// 	step([$class: "JUnitResultArchiver", testResults: "app/build/test-results/release/TEST-*.xml"])
+	// }
+	// stage('Instrumented Tests') {
+	// 	echo 'Android instrumented testing...'
+	// 	try {
+	// 		fastlane('instrumentedTest')
+	// 	} catch (ex) {}
+	// 	step([$class: "JUnitResultArchiver", testResults: "app/build/outputs/androidTest-results/connected/TEST-*.xml"])
 
-		// }
+	// }
+
+	node {
 		def userInput
 		stage('PR Review') {
 			userInput = input(
@@ -120,12 +124,12 @@ node {
 			echo 'Failed code review...'
 			currentBuild.result = 'FAILURE'
 		}
-
-		// archive "/app/build/test-results/release/TEST-lammar.com.csdemo.ui.showscore.ShowScorePresenterTest.xml"
-		// archiveArtifacts artifacts: '/app/build/test-results/release/TEST-lammar.com.csdemo.ui.showscore.ShowScorePresenterTest.xml', excludes: 'output/*.md'
-		// junit "/app/build/test-results/release/TEST-lammar.com.csdemo.ui.showscore.ShowScorePresenterTest.xml"
-		// junit "/Users/Shared/Jenkins/TEST-1.xml"
 	}
+
+	// archive "/app/build/test-results/release/TEST-lammar.com.csdemo.ui.showscore.ShowScorePresenterTest.xml"
+	// archiveArtifacts artifacts: '/app/build/test-results/release/TEST-lammar.com.csdemo.ui.showscore.ShowScorePresenterTest.xml', excludes: 'output/*.md'
+	// junit "/app/build/test-results/release/TEST-lammar.com.csdemo.ui.showscore.ShowScorePresenterTest.xml"
+	// junit "/Users/Shared/Jenkins/TEST-1.xml"
 }
 
 // Utility functions
