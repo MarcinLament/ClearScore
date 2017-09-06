@@ -45,7 +45,7 @@ node {
 			parallel (
 				"Unit Tests" : { 
 					node { 
-						deleteDir()
+						// deleteDir()
 						unstash 'repo'
 						sh "pwd"
 						sh "ls -a"
