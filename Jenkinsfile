@@ -31,7 +31,7 @@ node {
 					try {
 						fastlane('instrumentedTest')
 					} catch (ex) {}
-					step([$class: "JUnitResultArchiver", testResults: "app/build/outputs/androidTest-results/connected/release/TEST-*.xml"])
+					step([$class: "JUnitResultArchiver", testResults: "app/build/outputs/androidTest-results/connected/TEST-*.xml"])
 				}
 			)
 		}
