@@ -42,10 +42,11 @@ if (branch_type == "feature") {
 					unstash 'repo'
 					try {
 						// fastlane('instrumentedTest')
+						error("stopping...")
 						throw new IOException()
 					} catch (ex) {
 						passedAutomatedTests = false
-						currentBuild.result = 'UNSTABLE'
+						currentBuild.result = 'FAILURE'
 					}
 				// 	step([$class: "JUnitResultArchiver", testResults: "app/build/outputs/androidTest-results/connected/TEST-*.xml"])
 				}
