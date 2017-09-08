@@ -87,7 +87,7 @@ desc ""
 lane :finalizeAutomatedTestingStage do |options|
 
   if options[:success]
-    slack(message: "New Pull Request ready for review!")
+    # slack(message: "New Pull Request ready for review!")
     # Slack success - ready for PR
   else
     # Slack failure
