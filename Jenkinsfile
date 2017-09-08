@@ -1,6 +1,6 @@
 def branch_type = get_branch_type "${env.BRANCH_NAME}"
 
-echo "BBBBBR: ${env.BRANCH_NAME} ${env.CHANGE_ID} ${env.CHANGE_TARGET} ${env.JOB_NAME}"
+echo "BBBBBR: ${env.BRANCH_NAME} ${env.CHANGE_ID} ${env.CHANGE_TARGET} ${env.CHANGE_BRANCH}"
 
 node {
 
