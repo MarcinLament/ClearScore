@@ -97,7 +97,7 @@ if (branch_type == "feature") {
 }
 
 def askForComments() {
-	input(message: 'Reason for failing?', parameters: [
+	return input(message: 'Reason for failing?', parameters: [
 		$class: 'TextParameterDefinition', defaultValue: '', description: 'Add you comments below:', name: 'failReason']
 	])
 }
