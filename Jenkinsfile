@@ -22,7 +22,7 @@ if (branch_type == "feature") {
 	}
 
 	stage('Test') {
-		def passedAutomatedTests = true
+		def hasHandledFailure = false
 		parallel (
 			"Unit Tests" : { 
 				node { 
@@ -33,9 +33,13 @@ if (branch_type == "feature") {
 
 					try {
 						// fastlane('unitTest')
-						echo "Passed unit tests"
+						throw new IOException()
 					} catch (ex) {
 						echo "Fail unit tests"
+						if (!hasHandledFailure) {
+							hasHandledFailure = true
+							echo "NOTIFY!!!"
+						}
 						abort()
 					}
 				// 	step([$class: "JUnitResultArchiver", testResults: "app/build/test-results/release/TEST-*.xml"])
@@ -47,13 +51,16 @@ if (branch_type == "feature") {
 					unstash 'repo'
 
 					sleep 3
-					
 
 					try {
 						// fastlane('instrumentedTest')
 						throw new IOException()
 					} catch (ex) {
 						echo "Fail instrumented tests"
+						if (!hasHandledFailure) {
+							hasHandledFailure = true
+							echo "NOTIFY!!!"
+						}
 						abort()
 					}
 				// 	step([$class: "JUnitResultArchiver", testResults: "app/build/outputs/androidTest-results/connected/TEST-*.xml"])
