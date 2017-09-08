@@ -22,14 +22,17 @@ if (branch_type == "feature") {
 	}
 
 	stage('Test') {
+		def passedAutomatedTests = true
 		parallel (
 			"Unit Tests" : { 
 				node { 
 					deleteDir()
 					unstash 'repo'
-				// 	try {
-				// 		fastlane('unitTest')
-				// 	} catch (ex) {}
+					try {
+						// fastlane('unitTest')
+					} catch (ex) {
+						passedAutomatedTests = false
+					}
 				// 	step([$class: "JUnitResultArchiver", testResults: "app/build/test-results/release/TEST-*.xml"])
 				} 
 			},
@@ -37,13 +40,23 @@ if (branch_type == "feature") {
 				node {
 					deleteDir()
 					unstash 'repo'
-				// 	try {
-				// 		fastlane('instrumentedTest')
-				// 	} catch (ex) {}
+					try {
+						// fastlane('instrumentedTest')
+						throw new IOException()
+					} catch (ex) {
+						passedAutomatedTests = false
+					}
 				// 	step([$class: "JUnitResultArchiver", testResults: "app/build/outputs/androidTest-results/connected/TEST-*.xml"])
 				}
 			}
 		)
+
+		if (passedAutomatedTests) {
+			echo "ready for code review!"
+		} else {
+			echo "didn't pass the automated tests"
+			abort()
+		}
 	}
 
 	node {
@@ -126,10 +139,6 @@ def askToAcceptCodeReview() {
 	catch(Exception e) {
 		return false
 	}
-	// return input(
-	// 	id: 'code_review', message: 'Pull Request Review', parameters: [
-	// 	[$class: 'BooleanParameterDefinition', defaultValue: true, description: 'Select the box if you accept this pull request.', name: 'I accept it!']
-	// ])
 }
 
 // Utility functions
