@@ -93,8 +93,8 @@ def abort() {
 }
 
 def askForComments() {
-	return input(id: 'Proceed3', message: 'Reason for failing?', parameters: [
-		[$class: 'TextParameterDefinition', defaultValue: '', description: 'Reason', name: 'failReason']
+	return input(id: 'qa_comments', message: 'Reason for failing?', parameters: [
+		[$class: 'TextParameterDefinition', defaultValue: '', description: 'Add your comments below.', name: 'failReason']
 	])
 }
 
