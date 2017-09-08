@@ -53,7 +53,7 @@ if (branch_type == "feature") {
 			if(codeReviewInput) {
 				echo "accepted!"
 			} else {
-				echo "not accepted!"
+				echo "not accepted! " + codeReviewInput
 				currentBuild.result = 'FAILURE'
 			}
 		}
