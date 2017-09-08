@@ -54,7 +54,7 @@ if (branch_type == "feature") {
 				echo "accepted!"
 			} else {
 				echo "not accepted! " + codeReviewInput
-				currentBuild.result = 'FAILURE'
+				abort()
 			}
 		}
 
@@ -65,7 +65,7 @@ if (branch_type == "feature") {
 				echo "should deploy!"
 			} else {
 				echo "should not deploy!"
-				currentBuild.result = 'FAILURE'
+				abort()
 			}
 		}
 
@@ -73,17 +73,23 @@ if (branch_type == "feature") {
 			echo 'Publishing to Fabric...'
 		}
 
-		def manualTestingInput = askToAcceptManualTesting()
+		def manualTestingInput
 		stage('Manula Testing') {
+			manualTestingInput = askToAcceptManualTesting()
 			if(manualTestingInput) {
 				echo 'Notify developer'
 			} else {
 				def manualTestingComments = askForComments()
 				echo 'Failed manual testing review: ' + manualTestingComments
-				currentBuild.result = 'FAILURE'
+				abort()
 			}
 		}
 	}
+}
+
+def abort() {
+	currentBuild.result = 'ABORTED'
+    error("stopping...")
 }
 
 def askForComments() {
@@ -93,15 +99,33 @@ def askForComments() {
 }
 
 def askToAcceptManualTesting() {
-	return input(id: 'manual_testing', message: 'Has passed manual testing?')
+	try {
+		input(id: 'manual_testing', message: 'Has passed manual testing?')
+		return true
+	}
+	catch(Exception e) {
+		return false
+	} 
 }
 
 def askToDeploy() {
-	return input(id: 'deploy', message: 'Ready to deploy to Fabric?')
+	try {
+		input(id: 'deploy', message: 'Ready to test?')
+		return true
+	}
+	catch(Exception e) {
+		return false
+	}
 }
 
 def askToAcceptCodeReview() {
-	return input(id: 'code_review', message: 'Do you accept the pull request?')
+	try {
+		input(id: 'code_review', message: 'Do you accept the pull request?')
+		return true
+	}
+	catch(Exception e) {
+		return false
+	}
 	// return input(
 	// 	id: 'code_review', message: 'Pull Request Review', parameters: [
 	// 	[$class: 'BooleanParameterDefinition', defaultValue: true, description: 'Select the box if you accept this pull request.', name: 'I accept it!']
