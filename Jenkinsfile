@@ -3,6 +3,10 @@ def branch_type = get_branch_type "${env.BRANCH_NAME}"
 echo "BBBBBR: ${env.BRANCH_NAME} ${env.CHANGE_ID} ${env.CHANGE_TARGET}"
 
 node {
+
+
+	echo "Source branches: ${scm.branches[0].name}"
+	
 	deleteDir()
 	checkout scm
 	echo "BBBBBR: ${env.BRANCH_NAME} ${env.CHANGE_ID} ${env.CHANGE_TARGET}"
