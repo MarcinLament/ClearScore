@@ -82,6 +82,27 @@ end
 
 
 
+# ================================= Start Code Review Stage ==========================================
+desc ""
+  lane :startCodeReviewStage do
+
+end
+
+# ================================== End Code Review Stage ==========================================
+desc ""
+  lane :finalizeCodeReviewStage do
+
+  if (true) {
+    # Tests passed
+    # 1. Start PR Review Stage
+    # 2. Slack
+    update_github_status
+  } else {
+    # Tests failed
+  }
+
+end
+
 # ================================== Publish to Crashlytics ==========================================
   desc "Publishing to Crashlytics"
   lane :deployToCrashytics do

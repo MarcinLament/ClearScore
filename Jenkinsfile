@@ -47,41 +47,75 @@ if (branch_type == "feature") {
 	}
 
 	node {
-		def userInput
 		stage('PR Review') {
-			sh "ls -a"
-			userInput = input(
-				id: 'Proceed1', message: 'Pull Request', parameters: [
-				[$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'Accept Pull Request??']
-				])
-		}
-		if(userInput) {
-			stage('Deploy') {
-				echo 'Publishing to Fabric...'
+			if(askToAcceptCodeReview()) {
+
+				echo "accepted!"
+
+				if (askToDeploy()) {
+					stage('Awaiting QA') {
+
+						if (askToDeploy()) {
+							stage('Deploy') {
+								echo 'Publishing to Fabric...'
+
+								if(askToAcceptManualTesting()) {
+									echo 'Notify developer'
+								} else {
+									def manualTestingComments = askForComments()
+									echo 'Failed manual testing review: ' + manualTestingComments
+									currentBuild.result = 'FAILURE'
+								}
+							}
+						}
+					}
+				}
 			}
+		}
+
 			
-			def manualTestingResult
-			stage('Manual Testing') {
-				manualTestingResult = input(
-				id: 'Proceed2', message: 'Manual testing', parameters: [
-				[$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'Has passed manual testing??']
-				])
-			}
-			if(manualTestingResult) {
-				echo 'Notify developer'
-			} else {
-				def manualTestingComments = input(
-				 id: 'Proceed3', message: 'Reason for failing?', parameters: [
-				 [$class: 'TextParameterDefinition', defaultValue: '', description: 'Reason', name: 'failReason']
-				])
-				echo 'Failed manual testing review: ' + manualTestingComments
-				currentBuild.result = 'FAILURE'
-			}
-		} else {
-			echo 'Failed code review...'
-			currentBuild.result = 'FAILURE'
-		}
+			
+			
+		// 	stage('Manual Testing') {
+		// 		manualTestingResult = input(
+		// 		id: 'Proceed2', message: 'Manual testing', parameters: [
+		// 		[$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'Has passed manual testing??']
+		// 		])
+		// 	}
+		// 	if(manualTestingResult) {
+		// 		echo 'Notify developer'
+		// 	} else {
+		// 		def manualTestingComments = 
+		// 		echo 'Failed manual testing review: ' + manualTestingComments
+		// 		currentBuild.result = 'FAILURE'
+		// 	}
+		// } else {
+		// 	echo 'Failed code review...'
+		// 	currentBuild.result = 'FAILURE'
+		// }
 	}
+}
+
+def askForComments() {
+	input(message: 'Reason for failing?', parameters: [
+		$class: 'TextParameterDefinition', defaultValue: '', description: 'Add you comments below:', name: 'failReason']
+	])
+}
+
+def askToAcceptManualTesting() {
+	return input(id: 'manual_testing', message: 'Has passed manual testing?')
+}
+
+def askToDeploy() {
+	return input(id: 'deploy', message: 'Ready to deploy to Fabric?')
+}
+
+def askToAcceptCodeReview() {
+	return input(id: 'code_review', message: 'Do you accept the pull request?')
+	// return input(
+	// 	id: 'code_review', message: 'Pull Request Review', parameters: [
+	// 	[$class: 'BooleanParameterDefinition', defaultValue: true, description: 'Select the box if you accept this pull request.', name: 'I accept it!']
+	// ])
 }
 
 // Utility functions
