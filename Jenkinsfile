@@ -51,11 +51,13 @@ if (branch_type == "feature") {
 			}
 		)
 
-		if (passedAutomatedTests) {
-			echo "ready for code review!"
-		} else {
-			echo "didn't pass the automated tests"
-			abort()
+		node {
+			if (passedAutomatedTests) {
+				echo "ready for code review!"
+			} else {
+				echo "didn't pass the automated tests"
+				abort()
+			}
 		}
 	}
 
