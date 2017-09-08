@@ -82,25 +82,25 @@ end
 
 
 
-# ================================= Start Code Review Stage ==========================================
+# ================================ Finalize Automated Testing ========================================
 desc ""
-  lane :startCodeReviewStage do
+lane :finalizeAutomatedTestingStage do |options|
 
+  if options[:success]
+    # Slack success - ready for PR
+  else
+    # Slack failure
+  end
 end
 
-# ================================== End Code Review Stage ==========================================
+# ==================================== Finalize Code Review ==========================================
 desc ""
-  lane :finalizeCodeReviewStage do
+lane :finalizeCodeReviewStage do |options|
 
-  if (true) {
-    # Tests passed
-    # 1. Start PR Review Stage
-    # 2. Slack
-    update_github_status
-  } else {
-    # Tests failed
-  }
-
+  if options[:success]
+    # slack feature is ready for testing
+    # update status ReadyToTest
+  end
 end
 
 # ================================== Publish to Crashlytics ==========================================

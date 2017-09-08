@@ -16,7 +16,7 @@ if (branch_type == "feature") {
 		stage('Checkout') {
 			deleteDir()
 			checkout scm
-			fastlane('ensureCheckout')
+			// fastlane('ensureCheckout')
 			stash name: 'repo', useDefaultExcludes: false
 		}
 	}
