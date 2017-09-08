@@ -18,6 +18,7 @@ if (branch_type == "feature") {
 			checkout scm
 			// fastlane('ensureCheckout')
 			stash name: 'repo', useDefaultExcludes: false
+			echo "PR: " + env.CHANGE_ID
 		}
 	}
 
@@ -28,52 +29,39 @@ if (branch_type == "feature") {
 				node { 
 					deleteDir()
 					unstash 'repo'
-
-					sleep 6
-
 					try {
 						// fastlane('unitTest')
-						throw new IOException()
+						// publishUnitTestReport()
 					} catch (ex) {
-						echo "Fail unit tests"
+						publishUnitTestReport()
 						if (!hasHandledFailure) {
 							hasHandledFailure = true
-							echo "NOTIFY!!!"
+							fastlane('finalizeAutomatedTestingStage success:false')
 						}
 						abort()
 					}
-				// 	step([$class: "JUnitResultArchiver", testResults: "app/build/test-results/release/TEST-*.xml"])
 				} 
 			},
 			"Instrumented Tests" : { 
 				node {
 					deleteDir()
 					unstash 'repo'
-
-					sleep 3
-
 					try {
 						// fastlane('instrumentedTest')
-						throw new IOException()
+						// publishUnitTestReport()
 					} catch (ex) {
-						echo "Fail instrumented tests"
+						publishUnitTestReport()
 						if (!hasHandledFailure) {
 							hasHandledFailure = true
-							echo "NOTIFY!!!"
+							fastlane('finalizeAutomatedTestingStage success:false')
 						}
 						abort()
 					}
-				// 	step([$class: "JUnitResultArchiver", testResults: "app/build/outputs/androidTest-results/connected/TEST-*.xml"])
 				}
 			}
 		)
 
-		// if (passedAutomatedTests) {
-		// 	echo "ready for code review!"
-		// } else {
-		// 	echo "didn't pass the automated tests"
-		// 	abort()
-		// }
+		fastlane('finalizeAutomatedTestingStage success:true')
 	}
 
 	node {
@@ -115,6 +103,10 @@ if (branch_type == "feature") {
 			}
 		}
 	}
+}
+
+def publishUnitTestReport(){
+	step([$class: "JUnitResultArchiver", testResults: "app/build/test-results/release/TEST-*.xml"])
 }
 
 def abort() {
