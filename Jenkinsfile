@@ -45,6 +45,7 @@ if (branch_type == "feature") {
 						throw new IOException()
 					} catch (ex) {
 						passedAutomatedTests = false
+						abort()
 					}
 				// 	step([$class: "JUnitResultArchiver", testResults: "app/build/outputs/androidTest-results/connected/TEST-*.xml"])
 				}
@@ -56,7 +57,6 @@ if (branch_type == "feature") {
 				echo "ready for code review!"
 			} else {
 				echo "didn't pass the automated tests"
-				abort()
 			}
 		}
 	}
