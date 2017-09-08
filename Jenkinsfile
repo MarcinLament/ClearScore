@@ -47,52 +47,42 @@ if (branch_type == "feature") {
 	}
 
 	node {
+		def codeReviewInput
 		stage('PR Review') {
-			if(askToAcceptCodeReview()) {
-
+			codeReviewInput = askToAcceptCodeReview()
+			if(codeReviewInput) {
 				echo "accepted!"
-
-				if (askToDeploy()) {
-					stage('Awaiting QA') {
-
-						if (askToDeploy()) {
-							stage('Deploy') {
-								echo 'Publishing to Fabric...'
-
-								if(askToAcceptManualTesting()) {
-									echo 'Notify developer'
-								} else {
-									def manualTestingComments = askForComments()
-									echo 'Failed manual testing review: ' + manualTestingComments
-									currentBuild.result = 'FAILURE'
-								}
-							}
-						}
-					}
-				}
+			} else {
+				echo "not accepted!"
+				currentBuild.result = 'FAILURE'
 			}
 		}
 
-			
-			
-			
-		// 	stage('Manual Testing') {
-		// 		manualTestingResult = input(
-		// 		id: 'Proceed2', message: 'Manual testing', parameters: [
-		// 		[$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'Has passed manual testing??']
-		// 		])
-		// 	}
-		// 	if(manualTestingResult) {
-		// 		echo 'Notify developer'
-		// 	} else {
-		// 		def manualTestingComments = 
-		// 		echo 'Failed manual testing review: ' + manualTestingComments
-		// 		currentBuild.result = 'FAILURE'
-		// 	}
-		// } else {
-		// 	echo 'Failed code review...'
-		// 	currentBuild.result = 'FAILURE'
-		// }
+		def shouldDeployInput
+		stage('Awaiting QA') {
+			shouldDeployInput = askToDeploy()
+			if (shouldDeployInput) {
+				echo "should deploy!"
+			} else {
+				echo "should not deploy!"
+				currentBuild.result = 'FAILURE'
+			}
+		}
+
+		stage('Deploy') {
+			echo 'Publishing to Fabric...'
+		}
+
+		def manualTestingInput = askToAcceptManualTesting()
+		stage('Manula Testing') {
+			if(manualTestingInput) {
+				echo 'Notify developer'
+			} else {
+				def manualTestingComments = askForComments()
+				echo 'Failed manual testing review: ' + manualTestingComments
+				currentBuild.result = 'FAILURE'
+			}
+		}
 	}
 }
 
