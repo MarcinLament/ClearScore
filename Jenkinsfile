@@ -61,7 +61,9 @@ if (branch_type == "feature") {
 			}
 		)
 
-		fastlane('finalizeAutomatedTestingStage success:true')
+		node {
+			fastlane('finalizeAutomatedTestingStage success:true')
+		}
 	}
 
 	node {
