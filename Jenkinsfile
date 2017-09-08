@@ -28,6 +28,9 @@ if (branch_type == "feature") {
 				node { 
 					deleteDir()
 					unstash 'repo'
+
+					sleep 10
+
 					try {
 						// fastlane('unitTest')
 					} catch (ex) {
@@ -40,10 +43,13 @@ if (branch_type == "feature") {
 				node {
 					deleteDir()
 					unstash 'repo'
+
+					sleep 5
+					throw new IOException()
+
 					try {
 						// fastlane('instrumentedTest')
-						error("stopping...")
-						throw new IOException()
+						
 					} catch (ex) {
 						passedAutomatedTests = false
 						currentBuild.result = 'FAILURE'
@@ -53,12 +59,12 @@ if (branch_type == "feature") {
 			}
 		)
 
-		if (passedAutomatedTests) {
-			echo "ready for code review!"
-		} else {
-			echo "didn't pass the automated tests"
-			abort()
-		}
+		// if (passedAutomatedTests) {
+		// 	echo "ready for code review!"
+		// } else {
+		// 	echo "didn't pass the automated tests"
+		// 	abort()
+		// }
 	}
 
 	node {
