@@ -1,5 +1,7 @@
 def branch_type = get_branch_type "${env.BRANCH_NAME}"
 
+echo "BBBBBR: ${env.BRANCH_NAME}"
+
 if (branch_type == "master") {
 
 	stage('MASTER') {
