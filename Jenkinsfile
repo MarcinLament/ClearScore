@@ -79,8 +79,8 @@ if (branch_type == "feature") {
 			if(manualTestingInput) {
 				echo 'Notify developer'
 			} else {
-				def manualTestingComments = askForComments()
-				echo 'Failed manual testing review: ' + manualTestingComments
+				def qaCommentsInput = askForComments()
+				echo 'Failed manual testing review: ' + qaCommentsInput
 				abort()
 			}
 		}
@@ -93,9 +93,9 @@ def abort() {
 }
 
 def askForComments() {
-	return input(message: 'Reason for failing?', parameters: [
-		$class: 'TextParameterDefinition', defaultValue: '', description: 'Add you comments below:', name: 'failReason']
-	)
+	return input(id: 'Proceed3', message: 'Reason for failing?', parameters: [
+		[$class: 'TextParameterDefinition', defaultValue: '', description: 'Reason', name: 'failReason']
+	])
 }
 
 def askToAcceptManualTesting() {
