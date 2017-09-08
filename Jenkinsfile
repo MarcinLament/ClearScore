@@ -29,12 +29,14 @@ if (branch_type == "feature") {
 					deleteDir()
 					unstash 'repo'
 
-					sleep 10
+					sleep 6
 
 					try {
 						// fastlane('unitTest')
+						echo "Passed unit tests"
 					} catch (ex) {
-						passedAutomatedTests = false
+						echo "Fail unit tests"
+						abort()
 					}
 				// 	step([$class: "JUnitResultArchiver", testResults: "app/build/test-results/release/TEST-*.xml"])
 				} 
@@ -44,15 +46,15 @@ if (branch_type == "feature") {
 					deleteDir()
 					unstash 'repo'
 
-					sleep 5
-					throw new IOException()
+					sleep 3
+					
 
 					try {
 						// fastlane('instrumentedTest')
-						
+						throw new IOException()
 					} catch (ex) {
-						passedAutomatedTests = false
-						currentBuild.result = 'FAILURE'
+						echo "Fail instrumented tests"
+						abort()
 					}
 				// 	step([$class: "JUnitResultArchiver", testResults: "app/build/outputs/androidTest-results/connected/TEST-*.xml"])
 				}
