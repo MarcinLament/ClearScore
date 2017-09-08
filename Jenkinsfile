@@ -7,7 +7,7 @@ node {
 	checkout scm
 	echo "BBBBBR: ${env.BRANCH_NAME} ${env.CHANGE_ID} ${env.CHANGE_TARGET}"
 
-	sh "echo git status"
+	sh "git status"
 }
 
 if (branch_type == "master") {
