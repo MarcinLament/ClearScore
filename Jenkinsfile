@@ -45,7 +45,7 @@ if (branch_type == "feature") {
 						throw new IOException()
 					} catch (ex) {
 						passedAutomatedTests = false
-						abort()
+						currentBuild.result = 'UNSTABLE'
 					}
 				// 	step([$class: "JUnitResultArchiver", testResults: "app/build/outputs/androidTest-results/connected/TEST-*.xml"])
 				}
