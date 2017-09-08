@@ -99,7 +99,7 @@ if (branch_type == "feature") {
 def askForComments() {
 	return input(message: 'Reason for failing?', parameters: [
 		$class: 'TextParameterDefinition', defaultValue: '', description: 'Add you comments below:', name: 'failReason']
-	])
+	)
 }
 
 def askToAcceptManualTesting() {
