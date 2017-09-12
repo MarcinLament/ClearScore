@@ -14,8 +14,8 @@ node {
 
 	// sh "git status"
 
-	sh '$GIT_COMMIT'
-	sh '$GIT_BRANCH'
+	echo " commit: ${GIT_COMMIT} ${env.GIT_COMMIT}"
+	echo " branch: ${GIT_BRANCH} ${env.GIT_BRANCH}"
 
 	sh 'printenv'
 
