@@ -34,8 +34,7 @@ if (branch_type == "feature") {
 			checkout scm
 			// fastlane('ensureCheckout')
 
-			sh "git status"
-			sh "git branch"
+			sh 'printenv'
 
 			stash name: 'repo', useDefaultExcludes: false
 			echo "PR: " + env.CHANGE_ID
