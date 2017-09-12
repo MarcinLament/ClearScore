@@ -74,7 +74,7 @@ if (branch_type == "feature") {
 		stage('PR Review') {
 			codeReviewInput = askToAcceptCodeReview()
 			if(codeReviewInput) {
-				fastlane('finalizeCodeReviewStage success:false')
+				fastlane('finalizeCodeReviewStage success:true')
 			} else {
 				abort()
 			}
