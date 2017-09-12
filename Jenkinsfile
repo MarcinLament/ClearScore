@@ -12,16 +12,8 @@ node {
 	// echo "Source branches: ${scm.branches[0].name}"
 	// echo "BBBBBR: ${env.BRANCH_NAME} ${env.CHANGE_ID} ${env.CHANGE_TARGET}"
 
-	// sh "git status"
-
-	echo " commit: ${env.GIT_COMMIT}"
-	echo " branch: ${GIT_BRANCH} ${env.GIT_BRANCH}"
-
-	sh 'printenv'
-
-	sh 'git rev-parse --abbrev-ref HEAD > GIT_BRANCH'
-    git_branch = readFile('GIT_BRANCH').trim()
-    echo git_branch
+	sh "git status"
+	sh "git branch"
 }
 
 if (branch_type == "master") {
