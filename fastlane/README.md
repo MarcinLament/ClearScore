@@ -30,6 +30,11 @@ xcode-select --install
 
 # Available Actions
 ## Android
+### android ensureCheckout
+```
+fastlane android ensureCheckout
+```
+Ensuring clean repository checkout
 ### android unitTest
 ```
 fastlane android unitTest
@@ -45,16 +50,21 @@ Runs all Instrumented tests
 fastlane android alpha
 ```
 Build alpha release
+### android finalizeAutomatedTestingStage
+```
+fastlane android finalizeAutomatedTestingStage
+```
+
+### android finalizeCodeReviewStage
+```
+fastlane android finalizeCodeReviewStage
+```
+
 ### android deployToCrashytics
 ```
 fastlane android deployToCrashytics
 ```
 Publishing to Crashlytics
-### android ensureCheckout
-```
-fastlane android ensureCheckout
-```
-Ensuring clean repository checkout
 ### android beta
 ```
 fastlane android beta
