@@ -9,10 +9,12 @@ node {
 
 	deleteDir()
 	checkout scm
-	echo "Source branches: ${scm.branches[0].name}"
-	echo "BBBBBR: ${env.BRANCH_NAME} ${env.CHANGE_ID} ${env.CHANGE_TARGET}"
+	// echo "Source branches: ${scm.branches[0].name}"
+	// echo "BBBBBR: ${env.BRANCH_NAME} ${env.CHANGE_ID} ${env.CHANGE_TARGET}"
 
-	sh "git status"
+	// sh "git status"
+
+	sh 'printenv'
 }
 
 if (branch_type == "master") {
