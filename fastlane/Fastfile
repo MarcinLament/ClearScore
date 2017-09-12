@@ -27,16 +27,13 @@ platform :android do
     ENV["SLACK_URL"] = "https://hooks.slack.com/services/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"
   end
 
-
-
 # ======================================== Checkout ==================================================
 desc "Ensuring clean repository checkout"
   lane :ensureCheckout do |options|
 
-  parent_branch = options[:parent_branch]
-
   # ensure_git_status_clean
 
+  parent_branch = options[:parent_branch]
   if ensure_branch_up_to_date_with_source(parent_branch)
     update_github_status("Checkout", "Up to date with #{parent_branch}", "success")
   else
@@ -73,27 +70,14 @@ end
     end
   end
 
-# ======================================== Build Alpha ===============================================
-  desc "Build alpha release"
-  lane :alpha do
-    gradle(task: "assembleRelease")
-    # crashlytics
-  end
-
-# ===================================== Build Production =============================================
-
-
-
 # ================================ Finalize Automated Testing ========================================
 desc ""
 lane :finalizeAutomatedTestingStage do |options|
 
   if options[:success]
-    notify("@here, `#{ENV['BRANCH_NAME']}` Pull Request is ready for review!", true)
+    notify("`#{ENV['BRANCH_NAME']}` Pull Request is ready for review!", true)
   else
-    notify("@here, `#{ENV['BRANCH_NAME']}` Pull Request failed automated testing!
-      \nMore info: #{ENV['BUILD_URL']}", false)
-    # Slack failure
+    notify("`#{ENV['BRANCH_NAME']}` Pull Request failed automated testing!\n#{ENV['RUN_DISPLAY_URL']}", false)
   end
 end
 
@@ -102,44 +86,39 @@ desc ""
 lane :finalizeCodeReviewStage do |options|
 
   if options[:success]
-    # slack feature is ready for testing
-    # update status ReadyToTest
+    update_github_status("AwaitingQA", "Waiting for QA", "pending")
+    notify("`#{ENV['BRANCH_NAME']}` is ready to deploy to Fabric!\n#{ENV['RUN_DISPLAY_URL']}", true)
   end
 end
 
-# ================================== Publish to Crashlytics ==========================================
-  desc "Publishing to Crashlytics"
-  lane :deployToCrashytics do
+# ====================================== Publish to Fabric ===========================================
+  desc "Publishing to Fabric"
+  lane :deployToFabric do |options|
 
-    ensure_git_branch(branch: 'feature\/.+')
+    ensure_git_branch(branch: 'feature\/.+|bug\/.+')
     # ensure_git_status_clean
 
-    name = git_branch.dup
-    name.slice! "origin/"
-    name.slice! "feature/"
-
+    update_github_status("AwaitingQA", "Waiting for QA", "success")
     
-
-    if ensure_branch_up_to_date_with_source('master')
-      puts "XXX: true"
-    else
-      puts "XXX: false"
+    parent_branch = options[:parent_branch]
+    if ensure_branch_up_to_date_with_source(parent_branch) == false
+      update_github_status("Deploy", "Outdated - merge in the #{parent_branch} branch first", "failure")
+      notify("Build failed: The branch is behind `#{parent_branch}` - merge in the #{parent_branch} branch first.", false)
+      exit(1)
     end
-    
 
-    # update_github_status('test1','description 1','success')
-
-    # gradle(task: "clean")
-
-    # badge --shield "Version-0.0.3-blue" --dark --shield_geometry "+0+25%" --shield_scale 0.75
-
-    # badge(shield: "CS-2132-orange", no_badge: true)
-    # gradle(task: "assembleRelease")
-    # crashlytics(
-    #   notes: change_log_since_last_tag('alpha')
-    # )
+    begin
+      update_github_status("Deploy", "Deploying to Fabric", "pending")
+      gradle(task: "assembleRelease")
+      crashlytics(
+        notes: change_log_since_last_tag('alpha')
+      )
+      update_github_status("Deploy", "App published to Fabric", "success")
+    rescue => ex
+      update_github_status("Deploy", "App cannot be published", "failure")
+      exit(1)
+    end
   end
-
 
 # ================================== Publish to Google Play ==========================================
 

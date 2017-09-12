@@ -32,9 +32,9 @@ if (branch_type == "feature") {
 					deleteDir()
 					unstash 'repo'
 					try {
-						// fastlane('unitTest')
-						// publishUnitTestReport()
-						throw new IOException()
+						fastlane('unitTest')
+						publishUnitTestReport()
+						// throw new IOException()
 					} catch (ex) {
 						publishUnitTestReport()
 						if (!hasHandledFailure) {
@@ -74,9 +74,8 @@ if (branch_type == "feature") {
 		stage('PR Review') {
 			codeReviewInput = askToAcceptCodeReview()
 			if(codeReviewInput) {
-				echo "accepted!"
+				fastlane('finalizeCodeReviewStage success:false')
 			} else {
-				echo "not accepted! " + codeReviewInput
 				abort()
 			}
 		}
