@@ -16,12 +16,11 @@ if (branch_type == "feature") {
 		stage('Checkout') {
 			deleteDir()
 			checkout scm
-			fastlane('ensureCheckout')
+			fastlane('ensureCheckout parent_branch:develop')
 
 			sh 'printenv'
 
 			stash name: 'repo', useDefaultExcludes: false
-			echo "PR: " + env.CHANGE_ID
 		}
 	}
 
@@ -35,6 +34,7 @@ if (branch_type == "feature") {
 					try {
 						// fastlane('unitTest')
 						// publishUnitTestReport()
+						throw new IOException()
 					} catch (ex) {
 						publishUnitTestReport()
 						if (!hasHandledFailure) {
