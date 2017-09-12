@@ -40,9 +40,14 @@ desc "Ensuring clean repository checkout"
     update_github_status("Checkout", "Up to date with #{parent_branch}", "success")
 
     slack(
-     message: "Branch #{ENV['BRANCH_NAME']} is behind '#{parent_branch}' | `Test message`",
-     channel: '#jenkins-test',
-     success: false
+      message: "Branch #{ENV['BRANCH_NAME']} is behind '#{parent_branch}' | `Test message`",
+      channel: '#jenkins-test',
+      success: false,
+      payload: {
+        "What's New" => "#{whats_new}",
+        "Commit Hash" => get_commit_hash
+      },
+      default_payloads: []
     )
   else
     update_github_status("Checkout", "Outdated - merge in the #{parent_branch} branch first", "failure")
@@ -212,6 +217,9 @@ def update_github_status(job_name, desc, state)
   )
 end
 
+def get_commit_hash 
+  sh("git rev-parse --short HEAD").chomp
+end
 
 def change_log_since_last_tag(build_type)
   # http://git-scm.com/docs/pretty-formats
