@@ -26,6 +26,7 @@ platform :android do
     ENV["CRASHLYTICS_BUILD_SECRET"] = "87674eca32e08647cd65145b9c3be026f1649e98623bf6ac0a684fc4c823add0"
     ENV["SLACK_URL"] = "https://hooks.slack.com/services/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"
   end
+end
 
 # ======================================== Checkout ==================================================
 desc "Ensuring clean repository checkout"
@@ -134,7 +135,7 @@ end
       exit(1)
     end
   end
-
+end
 
 
 # ============================================ Utils =================================================
