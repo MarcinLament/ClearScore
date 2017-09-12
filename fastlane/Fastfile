@@ -24,7 +24,7 @@ platform :android do
   before_all do
     ENV["CRASHLYTICS_API_TOKEN"] = "d1c91d54e078676f5a4cce31c32487999141a193"
     ENV["CRASHLYTICS_BUILD_SECRET"] = "87674eca32e08647cd65145b9c3be026f1649e98623bf6ac0a684fc4c823add0"
-    # ENV["SLACK_URL"] = "https://hooks.slack.com/services/..."
+    ENV["SLACK_URL"] = "https://hooks.slack.com/services/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"
   end
 
 
@@ -38,6 +38,12 @@ desc "Ensuring clean repository checkout"
   # ensure_git_status_clean
   if ensure_branch_up_to_date_with_source(parent_branch)
     update_github_status("Checkout", "Up to date with #{parent_branch}", "success")
+
+    slack(
+     message: "Branch #{env.BRANCH_NAME} is behind #{parent_branch} | `Test message`",
+     channel: '#jenkins-test',
+     success: false
+    )
   else
     update_github_status("Checkout", "Outdated - merge in the #{parent_branch} branch first", "failure")
     exit(1)
@@ -182,7 +188,9 @@ end
 # fastlane reports which actions are used. No personal data is recorded. 
 # Learn more at https://github.com/fastlane/fastlane#metrics
 
+def notify(message, success)
 
+end
 
 def ensure_branch_up_to_date_with_source(parent_branch)
   # Get common ancestor of both branches
