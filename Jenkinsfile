@@ -2,19 +2,19 @@ def branch_type = get_branch_type "${env.BRANCH_NAME}"
 
 echo "BBBBBR: ${env.BRANCH_NAME} ${env.CHANGE_ID} ${env.CHANGE_TARGET} ${env.CHANGE_BRANCH}"
 
-node {
+// node {
 
 
 	
 
-	deleteDir()
-	checkout scm
-	// echo "Source branches: ${scm.branches[0].name}"
-	// echo "BBBBBR: ${env.BRANCH_NAME} ${env.CHANGE_ID} ${env.CHANGE_TARGET}"
+// 	deleteDir()
+// 	checkout scm
+// 	// echo "Source branches: ${scm.branches[0].name}"
+// 	// echo "BBBBBR: ${env.BRANCH_NAME} ${env.CHANGE_ID} ${env.CHANGE_TARGET}"
 
-	sh "git status"
-	sh "git branch"
-}
+// 	sh "git status"
+// 	sh "git branch"
+// }
 
 if (branch_type == "master") {
 
@@ -33,6 +33,10 @@ if (branch_type == "feature") {
 			deleteDir()
 			checkout scm
 			// fastlane('ensureCheckout')
+
+			sh "git status"
+			sh "git branch"
+
 			stash name: 'repo', useDefaultExcludes: false
 			echo "PR: " + env.CHANGE_ID
 		}
