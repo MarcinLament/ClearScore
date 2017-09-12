@@ -136,7 +136,6 @@ end
     end
   end
 
-end
 
 after_all do |lane|
   # This block is called, only if the executed lane was successful
