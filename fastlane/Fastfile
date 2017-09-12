@@ -38,7 +38,7 @@ desc "Ensuring clean repository checkout"
     update_github_status("Checkout", "Up to date with #{parent_branch}", "success")
   else
     update_github_status("Checkout", "Outdated - merge in the #{parent_branch} branch first", "failure")
-    notify("Branch `#{ENV['BRANCH_NAME']}` is behind `#{parent_branch}` - It needs to be updated before the review can start.", false)
+    notify("DEV: Branch `#{ENV['BRANCH_NAME']}` is behind `#{parent_branch}` - It needs to be updated before the review can start.", false)
     exit(1)
   end
 end
@@ -75,9 +75,9 @@ desc ""
 lane :finalizeAutomatedTestingStage do |options|
 
   if options[:success]
-    notify("`#{ENV['BRANCH_NAME']}` Pull Request is ready for review!", true)
+    notify("DEV: `#{ENV['BRANCH_NAME']}` Pull Request is ready for review!", true)
   else
-    notify("`#{ENV['BRANCH_NAME']}` Pull Request failed automated testing!\n#{ENV['RUN_DISPLAY_URL']}", false)
+    notify("DEV: `#{ENV['BRANCH_NAME']}` Pull Request failed automated testing!\n#{ENV['RUN_DISPLAY_URL']}", false)
   end
 end
 
@@ -87,7 +87,19 @@ lane :finalizeCodeReviewStage do |options|
 
   if options[:success]
     update_github_status("AwaitingQA", "Waiting for QA", "pending")
-    notify("`#{ENV['BRANCH_NAME']}` is ready to deploy to Fabric!\n#{ENV['RUN_DISPLAY_URL']}", true)
+    notify("QA: `#{ENV['BRANCH_NAME']}` is ready to be built and deployed to Fabric!\n#{ENV['RUN_DISPLAY_URL']}", true)
+  end
+end
+
+# ================================== Finalize Manual Testing =========================================
+desc ""
+lane :finalizeManualTestingStage do |options|
+  if options[:success]
+    update_github_status("ManualQA", "Passed QA", "success")
+    notify("DEV: `#{ENV['BRANCH_NAME']}` passed QA and it's ready to be merged!\n#{ENV['RUN_DISPLAY_URL']}", true)
+  else
+    update_github_status("ManualQA", "Failed QA", "failure")
+    notify("DEV: `#{ENV['BRANCH_NAME']}` failed QA!\nReason: 'options[:reason]'\n#{ENV['RUN_DISPLAY_URL']}", false)
   end
 end
 
@@ -103,7 +115,7 @@ end
     parent_branch = options[:parent_branch]
     if ensure_branch_up_to_date_with_source(parent_branch) == false
       update_github_status("Deploy", "Outdated - merge in the #{parent_branch} branch first", "failure")
-      notify("Build failed: The branch is behind `#{parent_branch}` - merge in the #{parent_branch} branch first.", false)
+      notify("DEV: Build failed: The branch is behind `#{parent_branch}`.", false)
       exit(1)
     end
 
@@ -114,55 +126,18 @@ end
         notes: change_log_since_last_tag('alpha')
       )
       update_github_status("Deploy", "App published to Fabric", "success")
+      update_github_status("ManualQA", "In test", "pending")
+      notify("QA: App published to Fabric and ready to test (`#{ENV['BRANCH_NAME']}`)", true)
     rescue => ex
       update_github_status("Deploy", "App cannot be published", "failure")
+      notify("DEV: Build failed (`#{ENV['BRANCH_NAME']}`)\n#{ENV['RUN_DISPLAY_URL']}", false)
       exit(1)
     end
   end
 
-# ================================== Publish to Google Play ==========================================
 
 
-
-  desc "Submit a new Beta Build to Crashlytics Beta"
-  lane :beta do
-    gradle(task: "assembleRelease")
-    crashlytics
-
-    # sh "your_script.sh"
-    # You can also use other beta testing services here
-  end
-
-  desc "Deploy a new version to the Google Play"
-  lane :deploy do
-    gradle(task: "assembleRelease")
-    supply
-  end
-
-  # You can define as many lanes as you want
-
-  after_all do |lane|
-    # This block is called, only if the executed lane was successful
-
-    # slack(
-    #   message: "Successfully deployed new App Update."
-    # )
-  end
-
-  error do |lane, exception|
-    # slack(
-    #   message: exception.message,
-    #   success: false
-    # )
-  end
-end
-
-
-# More information about multiple platforms in fastlane: https://github.com/fastlane/fastlane/blob/master/fastlane/docs/Platforms.md
-# All available actions: https://docs.fastlane.tools/actions
-
-# fastlane reports which actions are used. No personal data is recorded. 
-# Learn more at https://github.com/fastlane/fastlane#metrics
+# ============================================ Utils =================================================
 
 def notify(message, success)
   slack(
@@ -191,7 +166,7 @@ def update_github_status(job_name, desc, state)
     owner: 'MarcinLament',
     repo: 'ClearScore',
     job_name: job_name,
-    build_url: "#{ENV['BUILD_URL']}",
+    build_url: "#{ENV['RUN_DISPLAY_URL']}",
     description: desc,
     state: state
   )

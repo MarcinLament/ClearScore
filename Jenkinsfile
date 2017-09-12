@@ -83,26 +83,23 @@ if (branch_type == "feature") {
 		def shouldDeployInput
 		stage('Awaiting QA') {
 			shouldDeployInput = askToDeploy()
-			if (shouldDeployInput) {
-				echo "should deploy!"
-			} else {
-				echo "should not deploy!"
+			if (!shouldDeployInput) {
 				abort()
 			}
 		}
 
 		stage('Deploy') {
-			echo 'Publishing to Fabric...'
+			fastlane('deployToFabric parent_branch:develop')
 		}
 
 		def manualTestingInput
-		stage('Manula Testing') {
+		stage('Manual Testing') {
 			manualTestingInput = askToAcceptManualTesting()
 			if(manualTestingInput) {
-				echo 'Notify developer'
+				fastlane('finalizeManualTestingStage success:true')
 			} else {
-				def qaCommentsInput = askForComments()
-				echo 'Failed manual testing review: ' + qaCommentsInput
+				def reasonInput = askForComments()
+				fastlane('finalizeManualTestingStage success:false reason:' + reasonInput)
 				abort()
 			}
 		}
@@ -151,7 +148,7 @@ def askToDeploy() {
 
 def askToAcceptCodeReview() {
 	try {
-		input(id: 'code_review', message: 'Do you accept the pull request?')
+		input(id: 'code_review', message: 'Has pull request passed the review?')
 		return true
 	}
 	catch(Exception e) {
