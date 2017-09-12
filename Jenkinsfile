@@ -15,6 +15,10 @@ node {
 	// sh "git status"
 
 	sh 'printenv'
+
+	sh 'git rev-parse --abbrev-ref HEAD > GIT_BRANCH'
+    git_branch = readFile('GIT_BRANCH').trim()
+    echo git_branch
 }
 
 if (branch_type == "master") {
