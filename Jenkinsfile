@@ -2,19 +2,21 @@ def branch_type = get_branch_type "${env.BRANCH_NAME}"
 
 echo "BBBBBR: ${env.BRANCH_NAME} ${env.CHANGE_ID} ${env.CHANGE_TARGET} ${env.CHANGE_BRANCH}"
 
-// node {
+node {
 
 
 	
 
-// 	deleteDir()
-// 	checkout scm
-// 	// echo "Source branches: ${scm.branches[0].name}"
-// 	// echo "BBBBBR: ${env.BRANCH_NAME} ${env.CHANGE_ID} ${env.CHANGE_TARGET}"
+	deleteDir()
+	checkout scm
+	// echo "Source branches: ${scm.branches[0].name}"
+	// echo "BBBBBR: ${env.BRANCH_NAME} ${env.CHANGE_ID} ${env.CHANGE_TARGET}"
 
-// 	sh "git status"
-// 	sh "git branch"
-// }
+	// sh "git status"
+	// sh "git branch"
+
+	sh 'printenv'
+}
 
 if (branch_type == "master") {
 
