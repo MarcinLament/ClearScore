@@ -107,7 +107,7 @@ end
   desc "Publishing to Fabric"
   lane :deployToFabric do |options|
 
-    ensure_git_branch(branch: 'feature\/.+|bug\/.+')
+    # ensure_git_branch(branch: 'feature\/.+|bug\/.+')
     # ensure_git_status_clean
 
     update_github_status("AwaitingQA", "Waiting for QA", "success")
