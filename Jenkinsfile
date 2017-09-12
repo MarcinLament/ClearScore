@@ -111,7 +111,12 @@ if (branch_type == "feature") {
 }
 
 def publishUnitTestReport(){
-	step([$class: "JUnitResultArchiver", testResults: "app/build/test-results/release/TEST-*.xml"])
+	try {
+		step([$class: "JUnitResultArchiver", testResults: "app/build/test-results/release/TEST-*.xml"])
+	} catch (Exception e) {
+		echo "Test results are missing."
+		currentBuild.result  = 'UNSTABLE'
+	}
 }
 
 def abort() {
