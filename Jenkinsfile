@@ -97,13 +97,13 @@ if (branch_type == "feature" || branch_type == "bug") {
 	}
 }
 // ==================================== DEVELOP PIPELINE ==================================== //
-else if ((branch_type == "develop") {
+else if (branch_type == "develop") {
 
 }
 
 
 // ==================================== RELEASE PIPELINE ==================================== //
-else if ((branch_type == "release" || branch_type == "hotfix") {
+else if (branch_type == "release" || branch_type == "hotfix") {
 	
 }
 
