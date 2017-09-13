@@ -147,9 +147,9 @@ end
 # ============================================ Utils =================================================
 
 def notify(message, success)
-  notify(message, success, nil)
+  notifyWithNotes(message, success, nil)
 end
-def notify(message, success, notes)
+def notifyWithNotes(message, success, notes)
   if get_build_environment == 'CI'
     slack(
       message: message,
