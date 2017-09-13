@@ -11,6 +11,10 @@ if (branch_type == "feature" || branch_type == "bug") {
 
 			sh 'printenv'
 
+			def url = sh(returnStdout: true, script: 'git config remote.origin.url').trim()
+
+			echo "XXX: " + url
+
 			stash name: 'repo', useDefaultExcludes: false
 		}
 	}

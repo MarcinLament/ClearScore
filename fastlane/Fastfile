@@ -127,7 +127,8 @@ end
       )
       update_github_status("Deploy", "App published to Fabric", "success")
       update_github_status("ManualQA", "In test", "pending")
-      notify("QA: App published to Fabric and ready to test (`#{ENV['BRANCH_NAME']}`)", true)
+      notes = change_log_since_last_tag('alpha')
+      notify("QA: App published to Fabric and ready to test (`#{ENV['BRANCH_NAME']}`)", true, notes)
     rescue => ex
       update_github_status("Deploy", "App cannot be published", "failure")
       notify("DEV: Build failed (`#{ENV['BRANCH_NAME']}`)", false)
@@ -149,6 +150,7 @@ end
 def notify(message, success)
   notifyWithNotes(message, success, nil)
 end
+
 def notifyWithNotes(message, success, notes)
   if get_build_environment == 'CI'
 
