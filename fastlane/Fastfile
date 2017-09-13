@@ -151,14 +151,24 @@ def notify(message, success)
 end
 def notifyWithNotes(message, success, notes)
   if get_build_environment == 'CI'
+
+    payload = ""
+    if notes != nil
+      payload = {
+        "What's New" => notes,
+        "Job URL" => ENV['RUN_DISPLAY_URL']
+      }
+    else
+      payload = {
+        "Job URL" => ENV['RUN_DISPLAY_URL']
+      }
+    end
+
     slack(
       message: message,
       channel: '#jenkins-test',
       success: success,
-      payload: {
-        "What's New" => notes,
-        "Job URL" => ENV['RUN_DISPLAY_URL']
-      },
+      payload: payload,
       default_payloads: []
     )
   end
