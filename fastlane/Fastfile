@@ -156,7 +156,7 @@ def notify(message, success, notes)
       channel: '#jenkins-test',
       success: success,
       payload: {
-        "What's New" => notes
+        "What's New" => notes,
         "Job URL" => ENV['RUN_DISPLAY_URL']
       },
       default_payloads: []
