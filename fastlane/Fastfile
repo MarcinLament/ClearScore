@@ -77,7 +77,7 @@ lane :finalizeAutomatedTestingStage do |options|
   if options[:success]
     notify("DEV: `#{ENV['BRANCH_NAME']}` Pull Request is ready for review!", true)
   else
-    notify("DEV: `#{ENV['BRANCH_NAME']}` Pull Request failed automated testing!\n#{ENV['RUN_DISPLAY_URL']}", false)
+    notify("DEV: `#{ENV['BRANCH_NAME']}` Pull Request failed automated testing!", false)
   end
 end
 
@@ -87,7 +87,7 @@ lane :finalizeCodeReviewStage do |options|
 
   if options[:success]
     update_github_status("AwaitingQA", "Waiting for QA", "pending")
-    notify("QA: `#{ENV['BRANCH_NAME']}` is ready to be built and deployed to Fabric!\n#{ENV['RUN_DISPLAY_URL']}", true)
+    notify("QA: `#{ENV['BRANCH_NAME']}` is ready to be built and deployed to Fabric!", true)
   end
 end
 
@@ -96,10 +96,10 @@ desc ""
 lane :finalizeManualTestingStage do |options|
   if options[:success]
     update_github_status("ManualQA", "Passed QA", "success")
-    notify("DEV: `#{ENV['BRANCH_NAME']}` passed QA and it's ready to be merged!\n#{ENV['RUN_DISPLAY_URL']}", true)
+    notify("DEV: `#{ENV['BRANCH_NAME']}` passed QA and it's ready to be merged!", true)
   else
     update_github_status("ManualQA", "Failed QA", "failure")
-    notify("DEV: `#{ENV['BRANCH_NAME']}` failed QA!\nReason: 'options[:reason]'\n#{ENV['RUN_DISPLAY_URL']}", false)
+    notify("DEV: `#{ENV['BRANCH_NAME']}` failed QA!\nReason: 'options[:reason]'", false)
   end
 end
 
@@ -110,7 +110,7 @@ end
     # ensure_git_branch(branch: 'feature\/.+|bug\/.+')
     # ensure_git_status_clean
 
-    update_github_status("AwaitingQA", "Waiting for QA", "success")
+    update_github_status("AwaitingQA", "Ready for QA", "success")
     
     parent_branch = options[:parent_branch]
     if ensure_branch_up_to_date_with_source(parent_branch) == false
@@ -130,7 +130,7 @@ end
       notify("QA: App published to Fabric and ready to test (`#{ENV['BRANCH_NAME']}`)", true)
     rescue => ex
       update_github_status("Deploy", "App cannot be published", "failure")
-      notify("DEV: Build failed (`#{ENV['BRANCH_NAME']}`)\n#{ENV['RUN_DISPLAY_URL']}", false)
+      notify("DEV: Build failed (`#{ENV['BRANCH_NAME']}`)", false)
       exit(1)
     end
   end
@@ -147,16 +147,21 @@ end
 # ============================================ Utils =================================================
 
 def notify(message, success)
-  slack(
-    message: message,
-    channel: '#jenkins-test',
-    success: success,
-    payload: {
-      "What's New" => "This is new",
-      "Commit Hash" => get_commit_hash
-    },
-    default_payloads: []
-  )
+  notify(message, success, nil)
+end
+def notify(message, success, notes)
+  if get_build_environment == 'CI'
+    slack(
+      message: message,
+      channel: '#jenkins-test',
+      success: success,
+      payload: {
+        "What's New" => notes
+        "Job URL" => ENV['RUN_DISPLAY_URL']
+      },
+      default_payloads: []
+    )
+  end
 end
 
 def ensure_branch_up_to_date_with_source(parent_branch)
@@ -168,15 +173,21 @@ def ensure_branch_up_to_date_with_source(parent_branch)
 end  
 
 def update_github_status(job_name, desc, state)
-  github_job_status(
-    token: ENV['GITHUB_ACCESS_TOKEN'],
-    owner: 'MarcinLament',
-    repo: 'ClearScore',
-    job_name: job_name,
-    build_url: "#{ENV['RUN_DISPLAY_URL']}",
-    description: desc,
-    state: state
-  )
+  if get_build_environment == 'CI'
+    github_job_status(
+      token: ENV['GITHUB_ACCESS_TOKEN'],
+      owner: 'MarcinLament',
+      repo: 'ClearScore',
+      job_name: job_name,
+      build_url: "#{ENV['RUN_DISPLAY_URL']}",
+      description: desc,
+      state: state
+    )
+  end
+end
+
+def get_build_environment
+  return ENV['BUILD_ENVIRONMENT']
 end
 
 def get_commit_hash 

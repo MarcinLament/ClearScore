@@ -1,16 +1,7 @@
 def branch_type = get_branch_type "${env.BRANCH_NAME}"
 
-if (branch_type == "master") {
-
-	stage('MASTER') {
-		echo 'Master pipeline'
-		sh "id -un"
-		sh "ruby -v"
-		sh "bundle"
-	}
-}
-
-if (branch_type == "feature") {
+// ==================================== FEATURE PIPELINE ==================================== //
+if (branch_type == "feature" || branch_type == "bug") {
 
 	node {
 		stage('Checkout') {
@@ -105,7 +96,19 @@ if (branch_type == "feature") {
 		}
 	}
 }
+// ==================================== DEVELOP PIPELINE ==================================== //
+else if ((branch_type == "develop") {
 
+}
+
+
+// ==================================== RELEASE PIPELINE ==================================== //
+else if ((branch_type == "release" || branch_type == "hotfix") {
+	
+}
+
+
+// ========================================= UTILS ========================================== //
 def publishUnitTestReport(){
 	try {
 		step([$class: "JUnitResultArchiver", testResults: "app/build/test-results/release/TEST-*.xml"])
@@ -148,7 +151,7 @@ def askToDeploy() {
 
 def askToAcceptCodeReview() {
 	try {
-		input(id: 'code_review', message: 'Has pull request passed the review?')
+		input(id: 'code_review', message: 'Has passed the review?')
 		return true
 	}
 	catch(Exception e) {
@@ -163,15 +166,18 @@ def fastlane(String command) {
 
 def get_branch_type(String branch_name) {
     //Must be specified according to <flowInitContext> configuration of jgitflow-maven-plugin in pom.xml
-    def dev_pattern = ".*development"
+    def dev_pattern = ".*develop"
     def release_pattern = ".*release/.*"
+    def bug_pattern = ".*bug/.*"
     def feature_pattern = ".*feature/.*"
     def hotfix_pattern = ".*hotfix/.*"
     def master_pattern = ".*master"
     if (branch_name =~ dev_pattern) {
-        return "dev"
+        return "develop"
     } else if (branch_name =~ release_pattern) {
         return "release"
+    } else if (branch_name =~ bug_pattern) {
+        return "bug"
     } else if (branch_name =~ master_pattern) {
         return "master"
     } else if (branch_name =~ feature_pattern) {
