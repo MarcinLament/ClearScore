@@ -188,8 +188,6 @@ def update_github_status(job_name, desc, state)
   if get_build_environment == 'CI'
     github_job_status(
       token: ENV['GITHUB_ACCESS_TOKEN'],
-      owner: 'MarcinLament',
-      repo: 'ClearScore',
       job_name: job_name,
       build_url: "#{ENV['RUN_DISPLAY_URL']}",
       description: desc,
