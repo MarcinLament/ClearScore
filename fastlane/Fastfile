@@ -1,4 +1,3 @@
-require 'json'
 # Customise this file, documentation can be found here:
 # https://github.com/fastlane/fastlane/tree/master/fastlane/docs
 # All available actions: https://docs.fastlane.tools/actions
@@ -6,6 +5,9 @@ require 'json'
 
 # Change the syntax highlighting to Ruby
 # All lines starting with a # are ignored when running `fastlane`
+
+# If you want to automatically update fastlane if a new version is available:
+# update_fastlane
 
 opt_out_crash_reporting
 
@@ -22,29 +24,26 @@ platform :android do
   before_all do
     ENV["CRASHLYTICS_API_TOKEN"] = "d1c91d54e078676f5a4cce31c32487999141a193"
     ENV["CRASHLYTICS_BUILD_SECRET"] = "87674eca32e08647cd65145b9c3be026f1649e98623bf6ac0a684fc4c823add0"
-    ENV["SLACK_URL"] = "https://hooks.slack.com/services/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"
-    # ENV["FASTLANE_HIDE_GITHUB_ISSUES"] = "1"
-    # ENV["FASTLANE_SKIP_UPDATE_CHECK"] = "1"
-
-    GITHUB_REPO = "ClearScore"
-    GITHUB_REPO_OWNER = "MarcinLament"
+    # ENV["SLACK_URL"] = "https://hooks.slack.com/services/..."
   end
+
+
 
 # ======================================== Checkout ==================================================
-  desc "Ensuring clean repository checkout"
-    lane :ensureCheckout do |options|
+desc "Ensuring clean repository checkout"
+  lane :ensureCheckout do
 
-    # ensure_git_status_clean
+  parent_branch = "master"
 
-    parent_branch = options[:parent_branch]
-    if ensure_branch_up_to_date_with_source(parent_branch)
-      update_github_status("Checkout", "Up to date with #{parent_branch}", "success")
-    else
-      update_github_status("Checkout", "Outdated - merge in the #{parent_branch} branch first", "failure")
-      notify("DEV: Branch `#{ENV['BRANCH_NAME']}` is behind `#{parent_branch}` - It needs to be updated before the review can start.", false)
-      exit(1)
-    end
+  # ensure_git_status_clean
+  if ensure_branch_up_to_date_with_source(parent_branch)
+    update_github_status("Checkout", "Up to date with #{parent_branch}", "success")
+  else
+    update_github_status("Checkout", "Outdated - merge in the #{parent_branch} branch first", "failure")
+    exit(1)
   end
+end
+
 
 # ======================================= Unit Test Lane =============================================
   desc "Runs all Unit tests"
@@ -64,7 +63,6 @@ platform :android do
   lane :instrumentedTest do
     begin
       update_github_status("IntrumentedTest", "Running tests", "pending")
-      # sh("adb uninstall <package>")
       gradle(task: "connectedAndroidTest")
       update_github_status("IntrumentedTest", "All tests passed", "success")
     rescue => ex
@@ -73,116 +71,96 @@ platform :android do
     end
   end
 
-# ================================ Finalize Automated Testing ========================================
-  desc ""
-  lane :finalizeAutomatedTestingStage do |options|
-    if options[:success]
-      notify("DEV: `#{ENV['BRANCH_NAME']}` Pull Request is ready for review!", true)
-    else
-      notify("DEV: `#{ENV['BRANCH_NAME']}` Pull Request failed automated testing!", false)
-    end
+# ======================================== Build Alpha ===============================================
+  desc "Build alpha release"
+  lane :alpha do
+    gradle(task: "assembleRelease")
+    # crashlytics
   end
 
-# ==================================== Finalize Code Review ==========================================
-  desc ""
-  lane :finalizeCodeReviewStage do |options|
-    if options[:success]
-      update_github_status("AwaitingQA", "Waiting for QA", "pending")
-      notify("QA: `#{ENV['BRANCH_NAME']}` is ready to be built and deployed to Fabric!", true)
-    end
-  end
+# ===================================== Build Production =============================================
 
-# ====================================== Publish to Fabric ===========================================
-  desc "Publishing to Fabric"
-  lane :deployToFabric do |options|
 
-    # ensure_git_branch(branch: 'feature\/.+|bug\/.+')
+
+# ================================== Publish to Crashlytics ==========================================
+  desc "Publishing to Crashlytics"
+  lane :deployToCrashytics do
+
+    ensure_git_branch(branch: 'feature\/.+')
     # ensure_git_status_clean
 
-    update_github_status("AwaitingQA", "Ready for QA", "success")
+    name = git_branch.dup
+    name.slice! "origin/"
+    name.slice! "feature/"
+
     
-    parent_branch = options[:parent_branch]
-    if ensure_branch_up_to_date_with_source(parent_branch) == false
-      update_github_status("Deploy", "Outdated - merge in the #{parent_branch} branch first", "failure")
-      notify("DEV: Build failed: The branch is behind `#{parent_branch}`.", false)
-      exit(1)
-    end
 
-    begin
-      update_github_status("Deploy", "Deploying to Fabric", "pending")
-      gradle(task: "assembleRelease")
-      crashlytics(
-        notes: change_log_since_last_tag('alpha')
-      )
-      update_github_status("Deploy", "App published to Fabric", "success")
-      update_github_status("ManualQA", "In test", "pending")
-      notes = change_log_since_last_tag('alpha')
-      notifyWithNotes("QA: App published to Fabric and ready to test (`#{ENV['BRANCH_NAME']}`)", true, notes)
-    rescue => ex
-      update_github_status("Deploy", "App cannot be published", "failure")
-      notify("DEV: Build failed (`#{ENV['BRANCH_NAME']}`)", false)
-      exit(1)
-    end
-  end
-
-# ================================== Finalize Manual Testing =========================================
-  desc ""
-  lane :finalizeManualTestingStage do |options|
-    if options[:success]
-      update_github_status("ManualQA", "Passed QA", "success")
-      notify("DEV: `#{ENV['BRANCH_NAME']}` passed QA and it's ready to be merged!", true)
+    if ensure_branch_up_to_date_with_source('master')
+      puts "XXX: true"
     else
-      update_github_status("ManualQA", "Failed QA", "failure")
-      notify("DEV: `#{ENV['BRANCH_NAME']}` failed QA!\nReason: 'options[:reason]'", false)
+      puts "XXX: false"
     end
+    
+
+    # update_github_status('test1','description 1','success')
+
+    # gradle(task: "clean")
+
+    # badge --shield "Version-0.0.3-blue" --dark --shield_geometry "+0+25%" --shield_scale 0.75
+
+    # badge(shield: "CS-2132-orange", no_badge: true)
+    # gradle(task: "assembleRelease")
+    # crashlytics(
+    #   notes: change_log_since_last_tag('alpha')
+    # )
   end
 
 
-  desc ""
-  lane :ble do
-    puts get_pull_request_number['number']
+# ================================== Publish to Google Play ==========================================
+
+
+
+  desc "Submit a new Beta Build to Crashlytics Beta"
+  lane :beta do
+    gradle(task: "assembleRelease")
+    crashlytics
+
+    # sh "your_script.sh"
+    # You can also use other beta testing services here
   end
 
-end
+  desc "Deploy a new version to the Google Play"
+  lane :deploy do
+    gradle(task: "assembleRelease")
+    supply
+  end
 
-after_all do |lane|
-  # This block is called, only if the executed lane was successful
-end
+  # You can define as many lanes as you want
 
-error do |lane, exception|
+  after_all do |lane|
+    # This block is called, only if the executed lane was successful
 
-end
+    # slack(
+    #   message: "Successfully deployed new App Update."
+    # )
+  end
 
-# ============================================ Utils =================================================
-
-def notify(message, success)
-  notifyWithNotes(message, success, nil)
-end
-
-def notifyWithNotes(message, success, notes)
-  if get_build_environment == 'CI'
-
-    payload = ""
-    if notes != nil
-      payload = {
-        "What's New" => notes,
-        "Job URL" => ENV['RUN_DISPLAY_URL']
-      }
-    else
-      payload = {
-        "Job URL" => ENV['RUN_DISPLAY_URL']
-      }
-    end
-
-    slack(
-      message: message,
-      channel: '#jenkins-test',
-      success: success,
-      payload: payload,
-      default_payloads: []
-    )
+  error do |lane, exception|
+    # slack(
+    #   message: exception.message,
+    #   success: false
+    # )
   end
 end
+
+
+# More information about multiple platforms in fastlane: https://github.com/fastlane/fastlane/blob/master/fastlane/docs/Platforms.md
+# All available actions: https://docs.fastlane.tools/actions
+
+# fastlane reports which actions are used. No personal data is recorded. 
+# Learn more at https://github.com/fastlane/fastlane#metrics
+
+
 
 def ensure_branch_up_to_date_with_source(parent_branch)
   # Get common ancestor of both branches
@@ -193,52 +171,20 @@ def ensure_branch_up_to_date_with_source(parent_branch)
 end  
 
 def update_github_status(job_name, desc, state)
-  if get_build_environment == 'CI'
-    github_job_status(
-      token: ENV['GITHUB_ACCESS_TOKEN'],
-      owner: GITHUB_REPO_OWNER,
-      repo: GITHUB_REPO,
-      job_name: job_name,
-      build_url: "#{ENV['RUN_DISPLAY_URL']}",
-      description: desc,
-      state: state
-    )
-  end
+  github_job_status(
+    token: ENV['GITHUB_ACCESS_TOKEN'],
+    owner: 'MarcinLament',
+    repo: 'ClearScore',
+    job_name: job_name,
+    build_url: "#{ENV['BUILD_URL']}",
+    description: desc,
+    state: state
+  )
 end
 
-def get_build_environment
-  return ENV['BUILD_ENVIRONMENT']
-end
-
-def get_commit_hash 
-  sh("git rev-parse HEAD")
-end
 
 def change_log_since_last_tag(build_type)
   # http://git-scm.com/docs/pretty-formats
   # <short hash> <commit title>
   return changelog_from_git_commits(pretty: '%h %s', tag_match_pattern: "#{build_type}/*")
-end
-
-def get_pull_request_number
-  result = github_api(
-    server_url: "https://api.github.com",
-    api_token: ENV["GITHUB_ACCESS_TOKEN"],
-    http_method: "GET",
-    path: "/repos/#{GITHUB_REPO_OWNER}/#{GITHUB_REPO}/pulls",
-    body: { ref: "master" }
-  )
-
-  json_result = result[:json]
-
-  if json_result != nil
-    latest_commit = get_commit_hash
-    json_result.each do |pr|
-      if pr['head']['sha'] = latest_commit
-        return pr
-      end
-    end
-  end
-
-  return nil
 end
