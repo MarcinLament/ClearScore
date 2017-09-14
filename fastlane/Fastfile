@@ -171,12 +171,13 @@ def notifyWithNotes(message, success, notes)
   if get_build_environment == 'CI'
 
     payload = { }
-    unless notes.empty?
+    unless notes.nil? || notes.empty?
       payload["What's New"] = notes
     end
 
-    unless ENV['CHANGE_URL'].empty?
-      payload["Pull Request"] = ENV['CHANGE_URL']
+    change_url = ENV['CHANGE_URL']
+    unless change_url.nil? || change_url.empty?
+      payload["Pull Request"] = change_url
     end
 
     payload["Job"] = ENV['RUN_DISPLAY_URL']
