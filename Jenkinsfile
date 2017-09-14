@@ -11,7 +11,7 @@ node {
 		withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dbe24fc6-b38e-4957-81db-d1f242ed0911',
 		usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
 			sh 'echo uname=$USERNAME pwd=$PASSWORD'
-			env.SOURCE_BRANCH_NAME = getBranchNameFromPR(PASSWORD, env.CHANGE_ID)
+			env.SOURCE_BRANCH_NAME = getBranchNameFromPR("e4b16f115b6ecd003099d312cd29adf090c52e4d", env.CHANGE_ID)
 		}
 	}
 }
@@ -179,7 +179,7 @@ def askToAcceptCodeReview() {
 // Utility functions
 def getBranchNameFromPR(String token, String prNumber) {
 	println("XXX: $token | xxx: $env.PASSWORD")
-	def header = [Authorization: 'token $env.PASSWORD']
+	def header = [Authorization: 'token $token']
 	// def url = "https://api.github.com/repos/ClearScore/caesium-android-v2/pulls"
 
 	// def header = [:]
