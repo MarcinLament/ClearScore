@@ -5,12 +5,14 @@ env.SOURCE_BRANCH_NAME = env.BRANCH_NAME
 env.GITHUB_REPO = "ClearScore"
 env.GITHUB_REPO_OWNER = "MarcinLament"
 
-if (env.BRANCH_NAME.toLowerCase().startsWith('pr-')) {
-	println "Getting branch name for PR"
-	withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: '34ae0b3d-8e89-49b8-a131-6a0694e39f6a',
-	usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-		sh 'echo uname=$USERNAME pwd=$PASSWORD'
-		env.SOURCE_BRANCH_NAME = getBranchNameFromPR(USERNAME, env.CHANGE_ID)
+node {
+	if (env.BRANCH_NAME.toLowerCase().startsWith('pr-')) {
+		println "Getting branch name for PR"
+		withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: '34ae0b3d-8e89-49b8-a131-6a0694e39f6a',
+		usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+			sh 'echo uname=$USERNAME pwd=$PASSWORD'
+			env.SOURCE_BRANCH_NAME = getBranchNameFromPR(PASSWORD, env.CHANGE_ID)
+		}
 	}
 }
 
