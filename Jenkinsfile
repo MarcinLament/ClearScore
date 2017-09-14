@@ -11,7 +11,7 @@ node {
 		// withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dbe24fc6-b38e-4957-81db-d1f242ed0911',
 		// usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
 		// 	sh 'echo uname=$USERNAME pwd=$PASSWORD'
-			env.SOURCE_BRANCH_NAME = getBranchNameFromPR($GITHUB_ACCESS_TOKEN, env.CHANGE_ID)
+			env.SOURCE_BRANCH_NAME = getBranchNameFromPR(GITHUB_ACCESS_TOKEN, env.CHANGE_ID)
 		// }
 	}
 }
