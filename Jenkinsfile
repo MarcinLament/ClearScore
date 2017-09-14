@@ -179,7 +179,7 @@ def askToAcceptCodeReview() {
 // Utility functions
 def getBranchNameFromPR(String token, String prNumber) {
 	println("XXX: $token | xxx: $env.PASSWORD")
-	def header = [Authorization: 'token $token']
+	def header = [Authorization: 'token $env.PASSWORD']
 	// def url = "https://api.github.com/repos/ClearScore/caesium-android-v2/pulls"
 
 	// def header = [:]
