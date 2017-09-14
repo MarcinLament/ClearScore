@@ -14,7 +14,7 @@ update_fastlane
 
 # This is the minimum version number required.
 # Update this, if you use features of a newer version
-fastlane_version "2.56.0"
+fastlane_version "2.54.4"
 
 default_platform :android
 
@@ -23,8 +23,8 @@ platform :android do
     ENV["CRASHLYTICS_API_TOKEN"] = "d1c91d54e078676f5a4cce31c32487999141a193"
     ENV["CRASHLYTICS_BUILD_SECRET"] = "87674eca32e08647cd65145b9c3be026f1649e98623bf6ac0a684fc4c823add0"
     ENV["SLACK_URL"] = "https://hooks.slack.com/services/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"
-    ENV["FASTLANE_HIDE_GITHUB_ISSUES"] = "1"
-    ENV["FASTLANE_SKIP_UPDATE_CHECK"] = "1"
+    # ENV["FASTLANE_HIDE_GITHUB_ISSUES"] = "1"
+    # ENV["FASTLANE_SKIP_UPDATE_CHECK"] = "1"
 
     GITHUB_REPO = "ClearScore"
     GITHUB_REPO_OWNER = "MarcinLament"
