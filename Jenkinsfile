@@ -2,6 +2,8 @@ import groovy.json.JsonSlurper
 
 // def branchName = "${env.BRANCH_NAME}"
 env.SOURCE_BRANCH_NAME = env.BRANCH_NAME
+env.GITHUB_REPO = "ClearScore"
+env.GITHUB_REPO_OWNER = "MarcinLament"
 
 if (env.BRANCH_NAME.toLowerCase().startsWith('pr-')) {
 	println "Getting branch name for PR"
@@ -174,7 +176,7 @@ def getBranchNameFromPR(String prNumber) {
 	// def url = "https://api.github.com/repos/ClearScore/caesium-android-v2/pulls"
 
 	def header = [:]
-	def url = "https://api.github.com/repos/MarcinLament/ClearScore/pulls"
+	def url = "https://api.github.com/repos/$env.GITHUB_REPO_OWNER/$env.GITHUB_REPO/pulls"
 
 	def json = url.toURL().getText(requestProperties: header)
 	def jsonSlurper = new JsonSlurper()
