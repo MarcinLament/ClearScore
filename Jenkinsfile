@@ -2,6 +2,8 @@ import groovy.json.JsonSlurper
 
 def branchName = "${env.BRANCH_NAME}"
 
+sh 'bundle install --path vendor/bundle'
+
 if (branchName.toLowerCase().startsWith('pr-')) {
 	println "Getting branch name for PR"
 	branchName = getBranchNameFromPR("7")
