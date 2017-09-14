@@ -174,11 +174,13 @@ def askToAcceptCodeReview() {
 
 // Utility functions
 def getBranchNameFromPR(String prNumber) {
-	def github = "3d91e952b529a3fee902bbec8a77acdd80db1f63"
+	// def header = [Authorization: 'token 114952b4b06ed5927ac8803d256b22d682b55e27']
 	// def url = "https://api.github.com/repos/ClearScore/caesium-android-v2/pulls"
+
+	def header = [:]
 	def url = "https://api.github.com/repos/MarcinLament/ClearScore/pulls"
 
-	def json = url.toURL().getText(requestProperties: [Authorization: 'token ' + github])
+	def json = url.toURL().getText(requestProperties: header)
 	def jsonSlurper = new JsonSlurper()
 	def object = jsonSlurper.parseText(json)
 
@@ -188,7 +190,6 @@ def getBranchNameFromPR(String prNumber) {
 	    	result = it.head.ref
 	    	return true
 	    }
-	    println it.number  // do the stuff that you wanted to before break
 	    return false
 	}
 	return result
