@@ -17,6 +17,13 @@ if (branch_type == "feature" || branch_type == "bug") {
 
 	node {
 		stage('Checkout') {
+
+			withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: '34ae0b3d-8e89-49b8-a131-6a0694e39f6a',
+			usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+				sh 'echo uname=$USERNAME pwd=$PASSWORD'
+			}
+
+			sh 'echo Xuname=$USERNAME Xpwd=$PASSWORD'
 			deleteDir()
 			checkout scm
 			fastlane('ensureCheckout parent_branch:develop')
