@@ -8,11 +8,11 @@ env.GITHUB_REPO_OWNER = "MarcinLament"
 node {
 	if (env.BRANCH_NAME.toLowerCase().startsWith('pr-')) {
 		println "Getting branch name for PR"
-		// withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: '4781d63f-dc8a-4294-ab38-2f98f437dcba',
-		// usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-		// 	sh 'echo uname=$USERNAME pwd=$PASSWORD'
-			env.SOURCE_BRANCH_NAME = getBranchNameFromPR("PASSWORD", env.CHANGE_ID)
-		// }
+		withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: '4781d63f-dc8a-4294-ab38-2f98f437dcba',
+		usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+			sh 'echo uname=$USERNAME pwd=$PASSWORD'
+			env.SOURCE_BRANCH_NAME = getBranchNameFromPR(PASSWORD, env.CHANGE_ID)
+		}
 	}
 }
 
@@ -23,15 +23,6 @@ if (branch_type == "feature" || branch_type == "bug") {
 
 	node {
 		stage('Checkout') {
-
-			withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: '4781d63f-dc8a-4294-ab38-2f98f437dcba', 
-			           passwordVariable: 'TEST_PASSWORD', 
-			           usernameVariable: 'TEST_USER']]) {
-			             sh "echo ${env.TEST_USER}"
-			             sh "echo ${env.TEST_PASSWORD}"
-			  }
-
-			sh 'echo Xuname=$USERNAME Xpwd=$PASSWORD'
 			deleteDir()
 			checkout scm
 			fastlane('ensureCheckout parent_branch:develop')
@@ -188,7 +179,7 @@ def askToAcceptCodeReview() {
 // Utility functions
 def getBranchNameFromPR(String token, String prNumber) {
 	println("XXX: $token")
-	// def header = [Authorization: 'token $token']
+	def header = [Authorization: 'token $token']
 	// def url = "https://api.github.com/repos/ClearScore/caesium-android-v2/pulls"
 
 	def header = [:]
