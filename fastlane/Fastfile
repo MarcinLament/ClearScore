@@ -77,9 +77,9 @@ platform :android do
   desc ""
   lane :finalizeAutomatedTestingStage do |options|
     if options[:success]
-      notify("DEV: Pull Request is ready for review!", true)
+      notify("DEV: New Pull Request \##{ENV['CHANGE_ID']} is ready for review!", true)
     else
-      notify("DEV: Pull Request failed automated testing!", false)
+      notify("DEV: Pull Request \##{ENV['CHANGE_ID']} failed automated testing!", false)
     end
   end
 
@@ -157,7 +157,7 @@ end
 # ============================================ Utils =================================================
 
 def get_feature_name
-  branch = ENV['SOURCE_BRANCH_NAME']
+  branch = ENV['SOURCE_BRANCH_NAME'].dup
   branch.slice! "origin/"
   branch.slice! "feature/"
   return branch
