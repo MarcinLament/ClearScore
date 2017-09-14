@@ -38,7 +38,7 @@ import groovy.json.JsonSlurper
 //   }
 // }
 
-println getBranchNameFromPR("7")
+println getBranchNameFromPR("5")
 
 def getBranchNameFromPR(String prNumber) {
 	// def header = [Authorization: 'token 114952b4b06ed5927ac8803d256b22d682b55e27']
@@ -51,13 +51,11 @@ def getBranchNameFromPR(String prNumber) {
 	def jsonSlurper = new JsonSlurper()
 	def object = jsonSlurper.parseText(json)
 
-	def result = null
-	object.find { 
-	    if (String.valueOf(it.number) == prNumber) {
-	    	result = it.head.ref
-	    	return true
-	    }
-	    return false
+	for (Object item : object) {
+		if (String.valueOf(item.number) == prNumber) {
+			return item.head.ref
+		}
 	}
-	return result
+
+	return null
 }
