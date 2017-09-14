@@ -8,7 +8,7 @@ env.GITHUB_REPO_OWNER = "MarcinLament"
 node {
 	if (env.BRANCH_NAME.toLowerCase().startsWith('pr-')) {
 		println "Getting branch name for PR"
-		withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: '34ae0b3d-8e89-49b8-a131-6a0694e39f6a',
+		withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: '4781d63f-dc8a-4294-ab38-2f98f437dcba',
 		usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
 			sh 'echo uname=$USERNAME pwd=$PASSWORD'
 			env.SOURCE_BRANCH_NAME = getBranchNameFromPR(PASSWORD, env.CHANGE_ID)
