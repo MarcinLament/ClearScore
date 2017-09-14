@@ -182,7 +182,7 @@ def getBranchNameFromPR(String token, String prNumber) {
 	def header = [Authorization: 'token $token']
 	// def url = "https://api.github.com/repos/ClearScore/caesium-android-v2/pulls"
 
-	def header = [:]
+	// def header = [:]
 	def url = "https://api.github.com/repos/$env.GITHUB_REPO_OWNER/$env.GITHUB_REPO/pulls"
 
 	def json = url.toURL().getText(requestProperties: header)
