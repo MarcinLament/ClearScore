@@ -5,27 +5,27 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: opt_out_crash_reporting" time="0.001796">
+      <testcase classname="fastlane.lanes" name="0: opt_out_crash_reporting" time="0.002903">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="1: Verifying required fastlane version" time="0.002122">
+      <testcase classname="fastlane.lanes" name="1: Verifying required fastlane version" time="0.001879">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="2: default_platform" time="0.001771">
+      <testcase classname="fastlane.lanes" name="2: default_platform" time="0.002435">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="3: github_api" time="0.663631">
+      <testcase classname="fastlane.lanes" name="3: github_api" time="0.683563">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="4: git rev-parse HEAD" time="0.012892">
+      <testcase classname="fastlane.lanes" name="4: git rev-parse HEAD" time="0.032848">
         
       </testcase>
     

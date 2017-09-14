@@ -1,4 +1,13 @@
-def branch_type = get_branch_type "${env.BRANCH_NAME}"
+import groovy.json.JsonSlurper
+
+def branchName = ${env.BRANCH_NAME}
+
+if (branchName.toLowerCase().startsWith('pr-')) {
+	println "Getting branch name for PR"
+	branchName = getBranchNameFromPR("7")
+}
+
+def branch_type = get_branch_type(branchName)
 
 // ==================================== FEATURE PIPELINE ==================================== //
 if (branch_type == "feature" || branch_type == "bug") {
@@ -164,6 +173,27 @@ def askToAcceptCodeReview() {
 }
 
 // Utility functions
+def getBranchNameFromPR(String prNumber) {
+	def github = "3d91e952b529a3fee902bbec8a77acdd80db1f63"
+	// def url = "https://api.github.com/repos/ClearScore/caesium-android-v2/pulls"
+	def url = "https://api.github.com/repos/MarcinLament/ClearScore/pulls"
+
+	def json = url.toURL().getText(requestProperties: [Authorization: 'token ' + github])
+	def jsonSlurper = new JsonSlurper()
+	def object = jsonSlurper.parseText(json)
+
+	def result = null
+	object.find { 
+	    if (String.valueOf(it.number) == prNumber) {
+	    	result = it.head.ref
+	    	return true
+	    }
+	    println it.number  // do the stuff that you wanted to before break
+	    return false
+	}
+	return result
+}
+
 def fastlane(String command) {
 	sh "bundle exec fastlane " + command
 }
