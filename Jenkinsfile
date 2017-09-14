@@ -1,14 +1,14 @@
 import groovy.json.JsonSlurper
 
 // def branchName = "${env.BRANCH_NAME}"
-env.SOURCE_BRANCH_NAME = ${env.BRANCH_NAME}
+env.SOURCE_BRANCH_NAME = env.BRANCH_NAME
 
-if (${env.BRANCH_NAME}.toLowerCase().startsWith('pr-')) {
+if (env.BRANCH_NAME.toLowerCase().startsWith('pr-')) {
 	println "Getting branch name for PR"
-	env.SOURCE_BRANCH_NAME = getBranchNameFromPR($CHANGE_ID)
+	env.SOURCE_BRANCH_NAME = getBranchNameFromPR(env.CHANGE_ID)
 }
 
-def branch_type = get_branch_type($SOURCE_BRANCH_NAME)
+def branch_type = get_branch_type(env.SOURCE_BRANCH_NAME)
 
 // ==================================== FEATURE PIPELINE ==================================== //
 if (branch_type == "feature" || branch_type == "bug") {
