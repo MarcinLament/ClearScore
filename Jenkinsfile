@@ -8,11 +8,11 @@ env.GITHUB_REPO_OWNER = "MarcinLament"
 node {
 	if (env.BRANCH_NAME.toLowerCase().startsWith('pr-')) {
 		println "Getting branch name for PR"
-		// withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dbe24fc6-b38e-4957-81db-d1f242ed0911',
-		// usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-		// 	sh 'echo uname=$USERNAME pwd=$PASSWORD'
-			env.SOURCE_BRANCH_NAME = getBranchNameFromPR(GITHUB_ACCESS_TOKEN, env.CHANGE_ID)
-		// }
+		withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'fa9f02da-fe3c-4594-8218-24dc4db81051',
+		usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+			sh 'echo uname=$USERNAME pwd=$PASSWORD'
+			env.SOURCE_BRANCH_NAME = getBranchNameFromPR(PASSWORD, env.CHANGE_ID)
+		}
 	}
 }
 
@@ -178,7 +178,7 @@ def askToAcceptCodeReview() {
 
 // Utility functions
 def getBranchNameFromPR(String token, String prNumber) {
-	println("XXX: $token | xxx: $env.PASSWORD")
+	println("XXX: $token")
 	def header = [Authorization: 'token ' + token]
 	// def url = "https://api.github.com/repos/ClearScore/caesium-android-v2/pulls"
 
