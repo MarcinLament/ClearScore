@@ -45,11 +45,6 @@ Runs all Unit tests
 fastlane android instrumentedTest
 ```
 Runs all Instrumented tests
-### android alpha
-```
-fastlane android alpha
-```
-Build alpha release
 ### android finalizeAutomatedTestingStage
 ```
 fastlane android finalizeAutomatedTestingStage
@@ -60,21 +55,21 @@ fastlane android finalizeAutomatedTestingStage
 fastlane android finalizeCodeReviewStage
 ```
 
-### android deployToCrashytics
+### android deployToFabric
 ```
-fastlane android deployToCrashytics
+fastlane android deployToFabric
 ```
-Publishing to Crashlytics
-### android beta
+Publishing to Fabric
+### android finalizeManualTestingStage
 ```
-fastlane android beta
+fastlane android finalizeManualTestingStage
 ```
-Submit a new Beta Build to Crashlytics Beta
-### android deploy
+
+### android ble
 ```
-fastlane android deploy
+fastlane android ble
 ```
-Deploy a new version to the Google Play
+
 
 ----
 
