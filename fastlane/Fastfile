@@ -41,7 +41,7 @@ platform :android do
       update_github_status("Checkout", "Up to date with #{parent_branch}", "success")
     else
       update_github_status("Checkout", "Outdated - merge in the #{parent_branch} branch first", "failure")
-      notify("DEV: Branch `#{ENV['BRANCH_NAME']}` is behind `#{parent_branch}` - It needs to be updated before the review can start.", false)
+      notify("DEV: Pull Request is behind `#{parent_branch}` - It needs to be updated before the review can start.", false)
       exit(1)
     end
   end
@@ -77,9 +77,9 @@ platform :android do
   desc ""
   lane :finalizeAutomatedTestingStage do |options|
     if options[:success]
-      notify("DEV: `#{ENV['BRANCH_NAME']}` Pull Request is ready for review!", true)
+      notify("DEV: Pull Request is ready for review!", true)
     else
-      notify("DEV: `#{ENV['BRANCH_NAME']}` Pull Request failed automated testing!", false)
+      notify("DEV: Pull Request failed automated testing!", false)
     end
   end
 
@@ -88,7 +88,7 @@ platform :android do
   lane :finalizeCodeReviewStage do |options|
     if options[:success]
       update_github_status("AwaitingQA", "Waiting for QA", "pending")
-      notify("QA: `#{ENV['BRANCH_NAME']}` is ready to be built and deployed to Fabric!", true)
+      notify("QA: New feature `" + get_feature_name + "` is ready to be built and deployed to Fabric!", true)
     end
   end
 
@@ -104,23 +104,23 @@ platform :android do
     parent_branch = options[:parent_branch]
     if ensure_branch_up_to_date_with_source(parent_branch) == false
       update_github_status("Deploy", "Outdated - merge in the #{parent_branch} branch first", "failure")
-      notify("DEV: Build failed: The branch is behind `#{parent_branch}`.", false)
+      notify("DEV: Build failed because the branch is behind `#{parent_branch}`.", false)
       exit(1)
     end
 
     begin
       update_github_status("Deploy", "Deploying to Fabric", "pending")
       gradle(task: "assembleRelease")
+      notes = change_log_since_last_tag('alpha')
       crashlytics(
-        notes: change_log_since_last_tag('alpha')
+        notes: notes
       )
       update_github_status("Deploy", "App published to Fabric", "success")
       update_github_status("ManualQA", "In test", "pending")
-      notes = change_log_since_last_tag('alpha')
-      notifyWithNotes("QA: App published to Fabric and ready to test (`#{ENV['BRANCH_NAME']}`)", true, notes)
+      notifyWithNotes("QA: New feature `" + get_feature_name + "` published to Fabric and ready to test!", true, notes)
     rescue => ex
       update_github_status("Deploy", "App cannot be published", "failure")
-      notify("DEV: Build failed (`#{ENV['BRANCH_NAME']}`)", false)
+      notify("DEV: Failed building `" + get_feature_name + "`", false)
       exit(1)
     end
   end
@@ -130,17 +130,18 @@ platform :android do
   lane :finalizeManualTestingStage do |options|
     if options[:success]
       update_github_status("ManualQA", "Passed QA", "success")
-      notify("DEV: `#{ENV['BRANCH_NAME']}` passed QA and it's ready to be merged!", true)
+      notify("DEV: Feature `" + get_feature_name + "` passed QA and it's ready to be merged!", true)
     else
       update_github_status("ManualQA", "Failed QA", "failure")
-      notify("DEV: `#{ENV['BRANCH_NAME']}` failed QA!\nReason: 'options[:reason]'", false)
+      notify("DEV: Feature '' failed QA!\nReason: 'options[:reason]'", false)
     end
   end
 
 
   desc ""
   lane :ble do
-    puts get_pull_request_number['number']
+    # puts get_pull_request_number['number']
+    # puts "QA: New feature `" + get_feature_name + "` is ready to be built and deployed to Fabric!"
   end
 
 end
@@ -155,6 +156,13 @@ end
 
 # ============================================ Utils =================================================
 
+def get_feature_name
+  branch = ENV['SOURCE_BRANCH_NAME']
+  branch.slice! "origin/"
+  branch.slice! "feature/"
+  return branch
+end
+
 def notify(message, success)
   notifyWithNotes(message, success, nil)
 end
@@ -162,17 +170,16 @@ end
 def notifyWithNotes(message, success, notes)
   if get_build_environment == 'CI'
 
-    payload = ""
-    if notes != nil
-      payload = {
-        "What's New" => notes,
-        "Job URL" => ENV['RUN_DISPLAY_URL']
-      }
-    else
-      payload = {
-        "Job URL" => ENV['RUN_DISPLAY_URL']
-      }
+    payload = { }
+    unless notes.empty?
+      payload["What's New"] = notes
     end
+
+    unless ENV['CHANGE_URL'].empty?
+      payload["Pull Request"] = ENV['CHANGE_URL']
+    end
+
+    payload["Job"] = ENV['RUN_DISPLAY_URL']
 
     slack(
       message: message,
@@ -218,27 +225,4 @@ def change_log_since_last_tag(build_type)
   # http://git-scm.com/docs/pretty-formats
   # <short hash> <commit title>
   return changelog_from_git_commits(pretty: '%h %s', tag_match_pattern: "#{build_type}/*")
-end
-
-def get_pull_request_number
-  result = github_api(
-    server_url: "https://api.github.com",
-    api_token: ENV["GITHUB_ACCESS_TOKEN"],
-    http_method: "GET",
-    path: "/repos/#{GITHUB_REPO_OWNER}/#{GITHUB_REPO}/pulls",
-    body: { ref: "master" }
-  )
-
-  json_result = result[:json]
-
-  if json_result != nil
-    latest_commit = get_commit_hash
-    json_result.each do |pr|
-      if pr['head']['sha'] = latest_commit
-        return pr
-      end
-    end
-  end
-
-  return nil
 end
