@@ -1,9 +1,9 @@
 import groovy.json.JsonSlurper
 
 // def branchName = "${env.BRANCH_NAME}"
-env.SOURCE_BRANCH_NAME = $BRANCH_NAME
+env.SOURCE_BRANCH_NAME = ${env.BRANCH_NAME}
 
-if ($BRANCH_NAME.toLowerCase().startsWith('pr-')) {
+if (${env.BRANCH_NAME}.toLowerCase().startsWith('pr-')) {
 	println "Getting branch name for PR"
 	env.SOURCE_BRANCH_NAME = getBranchNameFromPR($CHANGE_ID)
 }
