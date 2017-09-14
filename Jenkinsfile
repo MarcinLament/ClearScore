@@ -2,10 +2,6 @@ import groovy.json.JsonSlurper
 
 def branchName = "${env.BRANCH_NAME}"
 
-node{
-sh 'bundle install --path vendor/bundle'
-}
-
 if (branchName.toLowerCase().startsWith('pr-')) {
 	println "Getting branch name for PR"
 	branchName = getBranchNameFromPR("7")
@@ -20,6 +16,7 @@ if (branch_type == "feature" || branch_type == "bug") {
 		stage('Checkout') {
 			deleteDir()
 			checkout scm
+			sh 'bundle install --path vendor/bundle'
 			fastlane('ensureCheckout parent_branch:develop')
 
 			sh 'printenv'
