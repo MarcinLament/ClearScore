@@ -1,13 +1,14 @@
 import groovy.json.JsonSlurper
 
-def branchName = "${env.BRANCH_NAME}"
+// def branchName = "${env.BRANCH_NAME}"
+env.SOURCE_BRANCH_NAME = $BRANCH_NAME
 
-if (branchName.toLowerCase().startsWith('pr-')) {
+if ($BRANCH_NAME.toLowerCase().startsWith('pr-')) {
 	println "Getting branch name for PR"
-	branchName = getBranchNameFromPR("7")
+	env.SOURCE_BRANCH_NAME = getBranchNameFromPR($CHANGE_ID)
 }
 
-def branch_type = get_branch_type(branchName)
+def branch_type = get_branch_type($SOURCE_BRANCH_NAME)
 
 // ==================================== FEATURE PIPELINE ==================================== //
 if (branch_type == "feature" || branch_type == "bug") {
@@ -19,11 +20,6 @@ if (branch_type == "feature" || branch_type == "bug") {
 			fastlane('ensureCheckout parent_branch:develop')
 
 			sh 'printenv'
-
-			def url = sh(returnStdout: true, script: 'git config remote.origin.url').trim()
-
-			echo "XXX: " + url
-
 			stash name: 'repo', useDefaultExcludes: false
 		}
 	}
