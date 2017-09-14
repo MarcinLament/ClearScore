@@ -7,7 +7,11 @@ env.GITHUB_REPO_OWNER = "MarcinLament"
 
 if (env.BRANCH_NAME.toLowerCase().startsWith('pr-')) {
 	println "Getting branch name for PR"
-	env.SOURCE_BRANCH_NAME = getBranchNameFromPR(env.CHANGE_ID)
+	withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: '34ae0b3d-8e89-49b8-a131-6a0694e39f6a',
+	usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+		sh 'echo uname=$USERNAME pwd=$PASSWORD'
+		env.SOURCE_BRANCH_NAME = getBranchNameFromPR(USERNAME, env.CHANGE_ID)
+	}
 }
 
 def branch_type = get_branch_type(env.SOURCE_BRANCH_NAME)
@@ -18,10 +22,7 @@ if (branch_type == "feature" || branch_type == "bug") {
 	node {
 		stage('Checkout') {
 
-			withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: '34ae0b3d-8e89-49b8-a131-6a0694e39f6a',
-			usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-				sh 'echo uname=$USERNAME pwd=$PASSWORD'
-			}
+			
 
 			sh 'echo Xuname=$USERNAME Xpwd=$PASSWORD'
 			deleteDir()
@@ -178,11 +179,12 @@ def askToAcceptCodeReview() {
 }
 
 // Utility functions
-def getBranchNameFromPR(String prNumber) {
-	// def header = [Authorization: 'token 114952b4b06ed5927ac8803d256b22d682b55e27']
+def getBranchNameFromPR(String token, String prNumber) {
+	println("XXX: $token")
+	def header = [Authorization: 'token $token']
 	// def url = "https://api.github.com/repos/ClearScore/caesium-android-v2/pulls"
 
-	def header = [:]
+	// def header = [:]
 	def url = "https://api.github.com/repos/$env.GITHUB_REPO_OWNER/$env.GITHUB_REPO/pulls"
 
 	def json = url.toURL().getText(requestProperties: header)
