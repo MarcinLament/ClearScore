@@ -1,56 +1,187 @@
 def branch_type = get_branch_type "${env.BRANCH_NAME}"
 
-node {
-	if (branch_type == "master") {
+// ==================================== FEATURE PIPELINE ==================================== //
+if (branch_type == "feature" || branch_type == "bug") {
 
-		stage('MASTER') {
-			echo 'Master pipeline'
-			sh "id -un"
-			sh "ruby -v"
-			sh "bundle"
+	node {
+		stage('Checkout') {
+			deleteDir()
+			checkout scm
+			fastlane('ensureCheckout parent_branch:develop')
+
+			sh 'printenv'
+
+			def url = sh(returnStdout: true, script: 'git config remote.origin.url').trim()
+
+			echo "XXX: " + url
+
+			stash name: 'repo', useDefaultExcludes: false
 		}
 	}
 
-	if (branch_type == "feature") {
-		stage('Checkout') {
-			echo 'Checking out code'
-		}
-		stage('Test') {
-			step('Unit Test') {
-				echo 'Unit testing...'
-			}
-			step('Instrumental Test') {
-				echo 'Android instumental testing...'
-			}
-			step('PR Review') {
-				def userInput = input(
-				id: 'Proceed1', message: 'Was this successful?', parameters: [
-				[$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'Please confirm you agree with this']
-				])
-				if(userInput) {
-					step('Deploy') {
-						echo 'Publishing to Fabric...'
-					}	
-				} else {
-					currentBuild.result = 'FAILURE'
+	stage('Test') {
+		def hasHandledFailure = false
+		parallel (
+			"Unit Tests" : { 
+				node { 
+					deleteDir()
+					unstash 'repo'
+					try {
+						fastlane('unitTest')
+						publishUnitTestReport()
+						// throw new IOException()
+					} catch (ex) {
+						publishUnitTestReport()
+						if (!hasHandledFailure) {
+							hasHandledFailure = true
+							fastlane('finalizeAutomatedTestingStage success:false')
+						}
+						abort()
+					}
+				} 
+			},
+			"Instrumented Tests" : { 
+				node {
+					deleteDir()
+					unstash 'repo'
+					try {
+						// fastlane('instrumentedTest')
+						// publishUnitTestReport()
+					} catch (ex) {
+						publishUnitTestReport()
+						if (!hasHandledFailure) {
+							hasHandledFailure = true
+							fastlane('finalizeAutomatedTestingStage success:false')
+						}
+						abort()
+					}
 				}
+			}
+		)
+
+		node {
+			fastlane('finalizeAutomatedTestingStage success:true')
+		}
+	}
+
+	node {
+		def codeReviewInput
+		stage('PR Review') {
+			codeReviewInput = askToAcceptCodeReview()
+			if(codeReviewInput) {
+				fastlane('finalizeCodeReviewStage success:true')
+			} else {
+				abort()
+			}
+		}
+
+		def shouldDeployInput
+		stage('Awaiting QA') {
+			shouldDeployInput = askToDeploy()
+			if (!shouldDeployInput) {
+				abort()
+			}
+		}
+
+		stage('Deploy') {
+			fastlane('deployToFabric parent_branch:develop')
+		}
+
+		def manualTestingInput
+		stage('Manual Testing') {
+			manualTestingInput = askToAcceptManualTesting()
+			if(manualTestingInput) {
+				fastlane('finalizeManualTestingStage success:true')
+			} else {
+				def reasonInput = askForComments()
+				fastlane('finalizeManualTestingStage success:false reason:' + reasonInput)
+				abort()
 			}
 		}
 	}
 }
+// ==================================== DEVELOP PIPELINE ==================================== //
+else if (branch_type == "develop") {
+
+}
+
+
+// ==================================== RELEASE PIPELINE ==================================== //
+else if (branch_type == "release" || branch_type == "hotfix") {
+	
+}
+
+
+// ========================================= UTILS ========================================== //
+def publishUnitTestReport(){
+	try {
+		step([$class: "JUnitResultArchiver", testResults: "app/build/test-results/release/TEST-*.xml"])
+	} catch (Exception e) {
+		echo "Test results are missing."
+		currentBuild.result  = 'UNSTABLE'
+	}
+}
+
+def abort() {
+	currentBuild.result = 'ABORTED'
+    error("stopping...")
+}
+
+def askForComments() {
+	return input(id: 'qa_comments', message: 'Reason for failing?', parameters: [
+		[$class: 'TextParameterDefinition', defaultValue: '', description: 'Add your comments below.', name: 'failReason']
+	])
+}
+
+def askToAcceptManualTesting() {
+	try {
+		input(id: 'manual_testing', message: 'Has passed manual testing?')
+		return true
+	}
+	catch(Exception e) {
+		return false
+	} 
+}
+
+def askToDeploy() {
+	try {
+		input(id: 'deploy', message: 'Ready to test?')
+		return true
+	}
+	catch(Exception e) {
+		return false
+	}
+}
+
+def askToAcceptCodeReview() {
+	try {
+		input(id: 'code_review', message: 'Has passed the review?')
+		return true
+	}
+	catch(Exception e) {
+		return false
+	}
+}
 
 // Utility functions
+def fastlane(String command) {
+	sh "bundle exec fastlane " + command
+}
+
 def get_branch_type(String branch_name) {
     //Must be specified according to <flowInitContext> configuration of jgitflow-maven-plugin in pom.xml
-    def dev_pattern = ".*development"
+    def dev_pattern = ".*develop"
     def release_pattern = ".*release/.*"
+    def bug_pattern = ".*bug/.*"
     def feature_pattern = ".*feature/.*"
     def hotfix_pattern = ".*hotfix/.*"
     def master_pattern = ".*master"
     if (branch_name =~ dev_pattern) {
-        return "dev"
+        return "develop"
     } else if (branch_name =~ release_pattern) {
         return "release"
+    } else if (branch_name =~ bug_pattern) {
+        return "bug"
     } else if (branch_name =~ master_pattern) {
         return "master"
     } else if (branch_name =~ feature_pattern) {
