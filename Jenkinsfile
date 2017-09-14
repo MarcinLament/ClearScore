@@ -16,7 +16,6 @@ if (branch_type == "feature" || branch_type == "bug") {
 		stage('Checkout') {
 			deleteDir()
 			checkout scm
-			sh 'bundle install --path vendor/bundle'
 			fastlane('ensureCheckout parent_branch:develop')
 
 			sh 'printenv'
