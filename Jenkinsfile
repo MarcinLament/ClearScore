@@ -4,11 +4,13 @@ env.SOURCE_BRANCH_NAME = env.BRANCH_NAME
 env.GITHUB_REPO = "ClearScore"
 env.GITHUB_REPO_OWNER = "MarcinLament"
 
+def hasOpenPullRequest = false
 node {
-	if (env.BRANCH_NAME.toLowerCase().startsWith('pr-')) {
-		println "Getting branch name for PR"
-		withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: env.GITHUB_USER_ID,
-		usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+	withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: env.GITHUB_USER_ID, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+		env.GITHUB_ACCESS_TOKEN = PASSWORD
+		if (env.BRANCH_NAME.toLowerCase().startsWith('pr-')) {
+			hasOpenPullRequest = true
+			println "Getting branch name for PR"
 			env.SOURCE_BRANCH_NAME = getBranchNameFromPR(PASSWORD, env.CHANGE_ID)
 		}
 	}
@@ -17,7 +19,7 @@ node {
 def branch_type = get_branch_type(env.SOURCE_BRANCH_NAME)
 
 // ==================================== FEATURE PIPELINE ==================================== //
-if (branch_type == "feature" || branch_type == "bug") {
+if ((branch_type == "feature" || branch_type == "bug") && hasOpenPullRequest)  {
 
 	node {
 		stage('Checkout') {
