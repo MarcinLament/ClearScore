@@ -1,0 +1,218 @@
+# Customise this file, documentation can be found here:
+# https://github.com/fastlane/fastlane/tree/master/fastlane/docs
+# All available actions: https://docs.fastlane.tools/actions
+# can also be listed using the `fastlane actions` command
+
+# Change the syntax highlighting to Ruby
+# All lines starting with a # are ignored when running `fastlane`
+
+opt_out_crash_reporting
+
+# If you want to automatically update fastlane if a new version is available:
+update_fastlane
+
+# This is the minimum version number required.
+# Update this, if you use features of a newer version
+fastlane_version "2.56.0"
+
+default_platform :android
+
+platform :android do
+  before_all do
+    ENV["CRASHLYTICS_API_TOKEN"] = "d1c91d54e078676f5a4cce31c32487999141a193"
+    ENV["CRASHLYTICS_BUILD_SECRET"] = "87674eca32e08647cd65145b9c3be026f1649e98623bf6ac0a684fc4c823add0"
+    ENV["SLACK_URL"] = "https://hooks.slack.com/services/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"
+    ENV["FASTLANE_HIDE_GITHUB_ISSUES"] = "1"
+    ENV["FASTLANE_SKIP_UPDATE_CHECK"] = "1"
+  end
+
+# ======================================== Checkout ==================================================
+  desc "Ensuring clean repository checkout"
+    lane :ensureCheckout do |options|
+
+    puts "PASS: #{ENV['PASSWORD']}"
+
+    ensure_git_status_clean
+
+    parent_branch = options[:parent_branch]
+    if ensure_branch_up_to_date_with_source(parent_branch)
+      update_github_status("Checkout", "Up to date with #{parent_branch}", "success")
+    else
+      update_github_status("Checkout", "Outdated - merge in the #{parent_branch} branch first", "failure")
+      notify("DEV: Pull Request is behind `#{parent_branch}` - It needs to be updated before the review can start.", false)
+      exit(1)
+    end
+  end
+
+# ======================================= Unit Test Lane =============================================
+  desc "Runs all Unit tests"
+  lane :unitTest do
+    begin
+      update_github_status("UnitTest", "Running tests", "pending")
+      gradle(task: "test")
+      update_github_status("UnitTest", "All tests passed", "success")
+    rescue => ex
+      update_github_status("UnitTest", "Testing failed", "failure")
+      exit(1)
+    end
+  end
+
+# =================================== Intrumented Test Lane ==========================================
+  desc "Runs all Instrumented tests"
+  lane :instrumentedTest do
+    begin
+      update_github_status("IntrumentedTest", "Running tests", "pending")
+      # sh("adb uninstall <package>")
+      gradle(task: "connectedAndroidTest")
+      update_github_status("IntrumentedTest", "All tests passed", "success")
+    rescue => ex
+      update_github_status("IntrumentedTest", "Testing failed", "failure")
+      exit(1)
+    end
+  end
+
+# ================================ Finalize Automated Testing ========================================
+  desc ""
+  lane :finalizeAutomatedTestingStage do |options|
+    if options[:success]
+      notify("DEV: New Pull Request \##{ENV['CHANGE_ID']} is ready for review!", true)
+    else
+      notify("DEV: Pull Request \##{ENV['CHANGE_ID']} failed automated testing!", false)
+    end
+  end
+
+# ==================================== Finalize Code Review ==========================================
+  desc ""
+  lane :finalizeCodeReviewStage do |options|
+    if options[:success]
+      update_github_status("AwaitingQA", "Waiting for QA", "pending")
+      notify("QA: New feature `" + get_feature_name + "` is ready to be built and deployed to Fabric!", true)
+    end
+  end
+
+# ====================================== Publish to Fabric ===========================================
+  desc "Publishing to Fabric"
+  lane :deployToFabric do |options|
+
+    # ensure_git_branch(branch: 'feature\/.+|bug\/.+')
+    ensure_git_status_clean
+
+    update_github_status("AwaitingQA", "Ready for QA", "success")
+    
+    parent_branch = options[:parent_branch]
+    if ensure_branch_up_to_date_with_source(parent_branch) == false
+      update_github_status("Deploy", "Outdated - merge in the #{parent_branch} branch first", "failure")
+      notify("DEV: Build failed because the branch is behind `#{parent_branch}`.", false)
+      exit(1)
+    end
+
+    begin
+      update_github_status("Deploy", "Deploying to Fabric", "pending")
+      gradle(task: "assembleRelease")
+      notes = change_log_since_last_tag('alpha')
+      crashlytics(
+        notes: notes
+      )
+      update_github_status("Deploy", "App published to Fabric", "success")
+      update_github_status("ManualQA", "In test", "pending")
+      notifyWithNotes("QA: New feature `" + get_feature_name + "` published to Fabric and it's ready to test!", true, notes)
+    rescue => ex
+      update_github_status("Deploy", "App cannot be published", "failure")
+      notify("DEV: Failed building `" + get_feature_name + "`", false)
+      exit(1)
+    end
+  end
+
+# ================================== Finalize Manual Testing =========================================
+  desc ""
+  lane :finalizeManualTestingStage do |options|
+    if options[:success]
+      update_github_status("ManualQA", "Passed QA", "success")
+      notify("DEV: Feature `" + get_feature_name + "` passed QA and it's ready to be merged!", true)
+    else
+      update_github_status("ManualQA", "Failed QA", "failure")
+      notify("DEV: Feature '' failed QA!\nReason: 'options[:reason]'", false)
+    end
+  end
+end
+
+after_all do |lane|
+  # This block is called, only if the executed lane was successful
+end
+
+error do |lane, exception|
+
+end
+
+# ============================================ Utils =================================================
+def get_feature_name
+  branch = ENV['SOURCE_BRANCH_NAME'].dup
+  branch.slice! "origin/"
+  branch.slice! "feature/"
+  return branch
+end
+
+def notify(message, success)
+  notifyWithNotes(message, success, nil)
+end
+
+def notifyWithNotes(message, success, notes)
+  if get_build_environment == 'CI'
+
+    payload = { }
+    unless notes.nil? || notes.empty?
+      payload["What's New"] = notes
+    end
+
+    change_url = ENV['CHANGE_URL']
+    unless change_url.nil? || change_url.empty?
+      payload["Pull Request"] = change_url
+    end
+
+    payload["Job"] = ENV['RUN_DISPLAY_URL']
+
+    slack(
+      message: message,
+      channel: '#jenkins-test',
+      success: success,
+      payload: payload,
+      default_payloads: []
+    )
+  end
+end
+
+def ensure_branch_up_to_date_with_source(parent_branch)
+  # Get common ancestor of both branches
+  sha1 = sh("git merge-base @ origin/#{parent_branch}")
+  # Get the latest revision on the parent bnrach
+  sha2 = sh("git rev-parse origin/#{parent_branch}")
+  return sha1 == sha2
+end  
+
+def update_github_status(job_name, desc, state)
+  if get_build_environment == 'CI'
+    github_job_status(
+      token: ENV['GITHUB_ACCESS_TOKEN'],
+      owner: ENV['GITHUB_REPO_OWNER'],
+      repo: ENV['GITHUB_REPO'],
+      job_name: job_name,
+      build_url: "#{ENV['RUN_DISPLAY_URL']}",
+      description: desc,
+      state: state
+    )
+  end
+end
+
+def get_build_environment
+  return ENV['BUILD_ENVIRONMENT']
+end
+
+def get_commit_hash 
+  sh("git rev-parse HEAD")
+end
+
+def change_log_since_last_tag(build_type)
+  # http://git-scm.com/docs/pretty-formats
+  # <short hash> <commit title>
+  return changelog_from_git_commits(pretty: '%h %s', tag_match_pattern: "#{build_type}/*")
+end

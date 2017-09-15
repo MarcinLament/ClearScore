@@ -5,32 +5,36 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: update_fastlane" time="2.416577">
+      <testcase classname="fastlane.lanes" name="0: opt_out_crash_reporting" time="0.00333">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="1: Verifying required fastlane version" time="0.001626">
+      <testcase classname="fastlane.lanes" name="1: update_fastlane" time="2.337542">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="2: default_platform" time="0.00187">
+      <testcase classname="fastlane.lanes" name="2: Verifying required fastlane version" time="0.00151">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="3: github_job_status" time="0.772134">
+      <testcase classname="fastlane.lanes" name="3: default_platform" time="0.001317">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="4: gradle" time="22.053567">
-        
-      </testcase>
-    
-      
-      <testcase classname="fastlane.lanes" name="5: github_job_status" time="0.641058">
+      <testcase classname="fastlane.lanes" name="4: curl -X POST -H 'Content-type: application/json' --data '{&quot;text&quot;:&quot;&gt;:large_blue_circle: @marcin Hello feature `MOB-2312` OKK  its 
+&gt;*Notes*
+&gt;```my release notes```
+
+&gt;*Pull Request*
+&gt;https://google.com/2
+
+&gt;*Job*
+&gt;https://google.com/1
+&quot;, &quot;channel&quot;:&quot;jenkins-test&quot;,&quot;link_names&quot;: 1}' https://hooks.slack.com/services/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" time="0.516736">
         
       </testcase>
     
