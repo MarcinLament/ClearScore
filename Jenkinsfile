@@ -1,6 +1,5 @@
 import groovy.json.JsonSlurper
 
-// def branchName = "${env.BRANCH_NAME}"
 env.SOURCE_BRANCH_NAME = env.BRANCH_NAME
 env.GITHUB_REPO = "ClearScore"
 env.GITHUB_REPO_OWNER = "MarcinLament"
@@ -8,9 +7,8 @@ env.GITHUB_REPO_OWNER = "MarcinLament"
 node {
 	if (env.BRANCH_NAME.toLowerCase().startsWith('pr-')) {
 		println "Getting branch name for PR"
-		withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'fa9f02da-fe3c-4594-8218-24dc4db81051',
+		withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: env.GITHUB_USER_ID,
 		usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-			sh 'echo uname=$USERNAME pwd=$PASSWORD'
 			env.SOURCE_BRANCH_NAME = getBranchNameFromPR(PASSWORD, env.CHANGE_ID)
 		}
 	}
@@ -42,7 +40,6 @@ if (branch_type == "feature" || branch_type == "bug") {
 					try {
 						fastlane('unitTest')
 						publishUnitTestReport()
-						// throw new IOException()
 					} catch (ex) {
 						publishUnitTestReport()
 						if (!hasHandledFailure) {
@@ -178,11 +175,7 @@ def askToAcceptCodeReview() {
 
 // Utility functions
 def getBranchNameFromPR(String token, String prNumber) {
-	println("XXX: $token")
 	def header = [Authorization: 'token ' + token]
-	// def url = "https://api.github.com/repos/ClearScore/caesium-android-v2/pulls"
-
-	// def header = [:]
 	def url = "https://api.github.com/repos/$env.GITHUB_REPO_OWNER/$env.GITHUB_REPO/pulls"
 
 	def json = url.toURL().getText(requestProperties: header)
@@ -194,7 +187,6 @@ def getBranchNameFromPR(String token, String prNumber) {
 			return item.head.ref
 		}
 	}
-
 	return null
 }
 
@@ -203,7 +195,6 @@ def fastlane(String command) {
 }
 
 def get_branch_type(String branch_name) {
-    //Must be specified according to <flowInitContext> configuration of jgitflow-maven-plugin in pom.xml
     def dev_pattern = ".*develop"
     def release_pattern = ".*release/.*"
     def bug_pattern = ".*bug/.*"

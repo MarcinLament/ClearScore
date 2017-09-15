@@ -30,7 +30,9 @@ platform :android do
   desc "Ensuring clean repository checkout"
     lane :ensureCheckout do |options|
 
-    # ensure_git_status_clean
+    puts "PASS: #{ENV['PASSWORD']}"
+
+    ensure_git_status_clean
 
     parent_branch = options[:parent_branch]
     if ensure_branch_up_to_date_with_source(parent_branch)
@@ -93,7 +95,7 @@ platform :android do
   lane :deployToFabric do |options|
 
     # ensure_git_branch(branch: 'feature\/.+|bug\/.+')
-    # ensure_git_status_clean
+    ensure_git_status_clean
 
     update_github_status("AwaitingQA", "Ready for QA", "success")
     
