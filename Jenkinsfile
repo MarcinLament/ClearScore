@@ -21,7 +21,7 @@ def branch_type = getBranchType(env.SOURCE_BRANCH_NAME)
 echo "branch_type: $branch_type"
 
 // ==================================== FEATURE PIPELINE ==================================== //
-if ((branch_type == "feature" || branch_type == "bug") && hasOpenPullRequest)  {
+if (branch_type == "feature" || branch_type == "bug")  {
 
 	node {
 		stage('Checkout') {
