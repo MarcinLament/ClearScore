@@ -42,7 +42,7 @@ platform :android do
       update_github_status("Checkout", "Up to date with #{parent_branch}", "success")
     else
       update_github_status("Checkout", "Outdated - merge in the #{parent_branch} branch first", "failure")
-      notify("Pull Request is behind `#{parent_branch}` - It needs to be updated before the review can start.", false, '#mobile-apps-dev-droid', ENV["CHANGE_AUTHOR_EMAIL"])
+      notify("Pull Request is behind `#{parent_branch}` - It needs to be updated before the review can start.", false, '#mobile-apps-dev-droid', true)
       exit(1)
     end
   end
@@ -57,7 +57,7 @@ platform :android do
     rescue => ex
       update_github_status("UnitTest", "Testing failed", "failure")
       # notify("DEV: Pull Request \##{ENV['CHANGE_ID']} failed automated testing!", false, '#mobile-apps-dev-droid', ENV["CHANGE_AUTHOR_EMAIL"])
-      notify("Your feature `#{get_feature_name()}` failed automated testing!", false, '@marcin', ENV["CHANGE_AUTHOR_EMAIL"])
+      notify("Your feature `#{get_feature_name()}` failed automated testing!", false, nil, true)
       exit(1)
     end
   end
@@ -74,7 +74,7 @@ platform :android do
     parent_branch = options[:parent_branch]
     if ensure_branch_up_to_date_with_source(parent_branch) == false
       update_github_status("Deploy", "Outdated - merge in the #{parent_branch} branch first", "failure")
-      notify("Build failed because the branch is behind `#{parent_branch}`.", false, '#mobile-apps-dev-droid', ENV["CHANGE_AUTHOR_EMAIL"])
+      # notify("Build failed because the branch is behind `#{parent_branch}`.", false, '#mobile-apps-dev-droid', ENV["CHANGE_AUTHOR_EMAIL"])
       exit(1)
     end
 
@@ -89,12 +89,16 @@ platform :android do
       )
       update_github_status("Deploy", "App published to Fabric", "success")
       update_github_status("ManualQA", "In test", "pending")
-      notify("New feature `" + feature_name + "` published to Fabric and it's ready to be tested! `Build \#"+options[:build_number]+"`", true, '#mobile-apps', "")
+      # notify("New feature `" + feature_name + "` published to Fabric and it's ready to be tested! `Build \#"+options[:build_number]+"`", true, '#mobile-apps', "")
     rescue => ex
       update_github_status("Deploy", "App cannot be published", "failure")
-      notify("Failed building `" + feature_name + "`", false, '#mobile-apps-dev-droid', ENV["CHANGE_AUTHOR_EMAIL"])
+      # notify("Failed building `" + feature_name + "`", false, '#mobile-apps-dev-droid', ENV["CHANGE_AUTHOR_EMAIL"])
       exit(1)
     end
+  end
+
+  lane :ble do |options|
+    map_git_user_to_slack_username()
   end
 end
 
@@ -117,12 +121,11 @@ def get_feature_name()
   return branch
 end
 
-def notify(message, success, channel, user)
-  notifyWithNotes(message, success, nil, channel, user)
+def notify(message, success, channel, include_user)
+  notifyWithNotes(message, success, nil, channel, include_user)
 end
 
-def notifyWithNotes(message, success, notes, channel, user)
-  channel = '@marcin'
+def notifyWithNotes(message, success, notes, channel, include_user)
   if get_build_environment == 'CI'
 
     fields = []
@@ -140,10 +143,14 @@ def notifyWithNotes(message, success, notes, channel, user)
       fields.push({title: "", value: "<#{job_url}|Jenkins Job Details>", short: false})
     end
 
-    unless user.nil? || user.empty?
-      slack_user = map_git_user_to_slack_username(user)
+    if include_user
+      slack_user = map_git_user_to_slack_username()
       unless slack_user.nil? || slack_user.empty?
-        message = slack_user + ", " + message
+        if channel.nil? || channel.empty? 
+          channel = slack_user
+        else
+          message = slack_user + ", " + message
+        end
       end
     end
     
@@ -173,8 +180,11 @@ def ensure_branch_up_to_date_with_source(parent_branch)
   return sha1 == sha2
 end  
 
-def map_git_user_to_slack_username(git_user)
-  return sh("curl #{ENV['BUILD_NUMBER_SERVER_URL']}/user/#{git_user} --silent").delete(" \t\r\n")
+def map_git_user_to_slack_username()
+  git_user = sh('git log --format="%ae" | head -1').delete(" \t\r\n")
+  print git_user
+  print slack_user = sh("curl #{ENV['BUILD_NUMBER_SERVER_URL']}/user/#{git_user} --silent").delete(" \t\r\n")
+  return slack_user
 end
 
 def update_github_status(job_name, desc, state)

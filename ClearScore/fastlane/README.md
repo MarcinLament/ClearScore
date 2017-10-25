@@ -45,6 +45,11 @@ Runs all Unit tests
 fastlane android deployAlphaToFabric
 ```
 Publishing to Fabric
+### android ble
+```
+fastlane android ble
+```
+
 
 ----
 
