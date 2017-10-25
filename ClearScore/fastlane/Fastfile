@@ -134,7 +134,7 @@ def notifyWithNotes(message, success, notes, channel, include_user)
       fields.push({title: "What's New", value: notes, short: false})
     end
 
-    change_url = ENV['CHANGE_URL']
+    change_url = get_pull_request_url()
     unless change_url.nil? || change_url.empty?
       fields.push({title: "", value: "<#{change_url}|Pull Request Details>", short: false})
     end
@@ -212,6 +212,14 @@ end
 
 def get_commit_hash 
   sh("git rev-parse HEAD")
+end
+
+def get_pull_request_url
+  pr_number = ENV['PULL_REQUEST_NUMBER']
+  unless pr_number.nil? || pr_number.empty?
+    return "https://github.com/#{ENV['GITHUB_REPO_OWNER']}/#{ENV['GITHUB_REPO']}/pull/#{pr_number}"
+  end
+  return nil
 end
 
 def change_log_since_last_tag(build_type)
