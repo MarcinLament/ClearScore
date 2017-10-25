@@ -72,7 +72,7 @@ public class ShowScorePresenterTest {
         showScorePresenter.getScore();
 
         //Then no network error is shown
-        verify(showScoreView).showNoNetworkError();
+        verify(showScoreView).showNoNetworkError();123
     }
 
     @Test
