@@ -185,8 +185,7 @@ def update_github_status(job_name, desc, state)
       job_name: job_name,
       build_url: "#{ENV['RUN_DISPLAY_URL']}",
       description: desc,
-      state: state,
-      sha: ENV['CHANGE_COMMIT_ID']
+      state: state
     )
   end
 end
