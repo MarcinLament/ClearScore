@@ -27,6 +27,7 @@ if (branch_type == "feature" || branch_type == "bug")  {
 		stage('Checkout') {
 			deleteDir()
 			checkout scm
+			env.PULL_REQUEST_NUMBER = getPRNumberFromBranch(env.SOURCE_BRANCH_NAME)
 			env.CHANGE_COMMIT_ID = getLatestCommitIdForPR()
 			sh 'printenv'
 			fastlane('ensureCheckout parent_branch:develop')
@@ -93,6 +94,25 @@ def getBranchNameFromPR(String prNumber) {
 	for (Object item : object) {
 		if (String.valueOf(item.number) == prNumber) {
 			return item.head.ref
+		}
+	}
+	return null
+}
+
+/*
+ * Retrieves GitHub Pull Request number from branch name.
+ */
+def getPRNumberFromBranch(String branchName) {
+	def header = [Authorization: 'token ' + env.GITHUB_ACCESS_TOKEN]
+	def url = "https://api.github.com/repos/$env.GITHUB_REPO_OWNER/$env.GITHUB_REPO/pulls"
+
+	def json = url.toURL().getText(requestProperties: header)
+	def jsonSlurper = new JsonSlurper()
+	def object = jsonSlurper.parseText(json)
+
+	for (Object item : object) {
+		if (item.head.ref == branchName) {
+			return item.number
 		}
 	}
 	return null

@@ -98,7 +98,8 @@ platform :android do
   end
 
   lane :ble do |options|
-    map_git_user_to_slack_username()
+    git_user = get_latest_commit_username()
+    map_git_user_to_slack_username(git_user)
   end
 end
 
@@ -144,7 +145,8 @@ def notifyWithNotes(message, success, notes, channel, include_user)
     end
 
     if include_user
-      slack_user = map_git_user_to_slack_username()
+      git_user = get_latest_commit_username()
+      slack_user = map_git_user_to_slack_username(git_user)
       unless slack_user.nil? || slack_user.empty?
         if channel.nil? || channel.empty? 
           channel = slack_user
@@ -180,11 +182,14 @@ def ensure_branch_up_to_date_with_source(parent_branch)
   return sha1 == sha2
 end  
 
-def map_git_user_to_slack_username()
-  git_user = sh('git log --format="%ae" | head -1').delete(" \t\r\n")
+def map_git_user_to_slack_username(git_user)
   print git_user
   print slack_user = sh("curl #{ENV['BUILD_NUMBER_SERVER_URL']}/user/#{git_user} --silent").delete(" \t\r\n")
   return slack_user
+end
+
+def get_latest_commit_username()
+  return sh('git log --format="%ae" | head -1').delete(" \t\r\n")
 end
 
 def update_github_status(job_name, desc, state)

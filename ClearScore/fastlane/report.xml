@@ -5,27 +5,27 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: opt_out_crash_reporting" time="0.003405">
+      <testcase classname="fastlane.lanes" name="0: opt_out_crash_reporting" time="0.003235">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="1: Verifying required fastlane version" time="0.003251">
+      <testcase classname="fastlane.lanes" name="1: Verifying required fastlane version" time="0.00384">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="2: default_platform" time="0.003224">
+      <testcase classname="fastlane.lanes" name="2: default_platform" time="0.003499">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="3: git log --format=&quot;%ae&quot; | head -1" time="0.024399">
+      <testcase classname="fastlane.lanes" name="3: git log --format=&quot;%ae&quot; | head -1" time="0.025729">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="4: curl http://172.17.3.151:9991/user/marcin@clearscore.com --silent" time="0.02727">
+      <testcase classname="fastlane.lanes" name="4: curl http://172.17.3.151:9991/user/marcin@clearscore.com --silent" time="0.033052">
         
       </testcase>
     
