@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="false"
+        jar="/Users/marcin/Projects/ClearScore/ClearScore/app/build/intermediates/exploded-aar/com.android.support/support-vector-drawable/23.3.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="a0b5d60246cd9d4f3f2443611b3b4c25265840b5">
+        <dex dex="/Users/marcin/Projects/ClearScore/ClearScore/app/build/intermediates/pre-dexed/alpha/com.android.support-support-vector-drawable-23.3.0_fbc9be0eeeb696ef180bec791671bdc4fc54461c.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/marcin/Projects/ClearScore/ClearScore/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.3.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="8a034dd16c0dfd75fe86c52c2cd581592acc684a">
+        <dex dex="/Users/marcin/Projects/ClearScore/ClearScore/app/build/intermediates/pre-dexed/alpha/com.android.support-support-v4-23.3.0_e8e75506ccc0f095acf1e381519a49f2f4bc1dd2.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/marcin/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.6.1/b9d63507329a7178e026fc334f87587ee5070ac5/gson-2.6.1.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="b9d63507329a7178e026fc334f87587ee5070ac5">
+        <dex dex="/Users/marcin/Projects/ClearScore/ClearScore/app/build/intermediates/pre-dexed/alpha/gson-2.6.1_b08a687d3258e1570dd6c6a0a90d7377dff48c67.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/marcin/Projects/ClearScore/ClearScore/app/build/intermediates/exploded-aar/com.android.support/animated-vector-drawable/23.3.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="23be6993826b8fd88bbc8d14928bb3b8960d3d4e">
+        <dex dex="/Users/marcin/Projects/ClearScore/ClearScore/app/build/intermediates/pre-dexed/alpha/com.android.support-animated-vector-drawable-23.3.0_78f33afe7875ff73494b19ee19ed2812939f484c.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/marcin/.gradle/caches/modules-2/files-2.1/com.jakewharton/butterknife-annotations/8.2.1/d6f54d76edfbe779a50a8636b10fd3f555d8f780/butterknife-annotations-8.2.1.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="d6f54d76edfbe779a50a8636b10fd3f555d8f780">
+        <dex dex="/Users/marcin/Projects/ClearScore/ClearScore/app/build/intermediates/pre-dexed/alpha/butterknife-annotations-8.2.1_08a9ff597aaf0063a8fcfd34f6766054e444d75e.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/marcin/Projects/ClearScore/ClearScore/app/build/intermediates/exploded-aar/com.jakewharton/butterknife/8.2.1/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="ca5e58104f56f918f0fb3a5b1b371ab599ae56b2">
+        <dex dex="/Users/marcin/Projects/ClearScore/ClearScore/app/build/intermediates/pre-dexed/alpha/com.jakewharton-butterknife-8.2.1_c3d7d23643da50b549f08411a415eb94c6da4c04.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/marcin/Projects/ClearScore/ClearScore/app/build/intermediates/exploded-aar/uk.co.chrisjenx/calligraphy/2.2.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="ebcb0bcf52fab7c586f39717f7cb8de91748b1b1">
+        <dex dex="/Users/marcin/Projects/ClearScore/ClearScore/app/build/intermediates/pre-dexed/alpha/uk.co.chrisjenx-calligraphy-2.2.0_07c80b9ffbbe51a1d20e4d8f54f344a497c562eb.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/marcin/Projects/ClearScore/ClearScore/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.3.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="1b8e03daaa43fb0a4cd57e378167c2fd70454c1e">
+        <dex dex="/Users/marcin/Projects/ClearScore/ClearScore/app/build/intermediates/pre-dexed/alpha/com.android.support-appcompat-v7-23.3.0_cce34454ff1a29a15649e14dacb740530dac8a7f.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/marcin/Projects/ClearScore/ClearScore/app/build/intermediates/exploded-aar/io.reactivex/rxandroid/1.2.1/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="5a2386ad9bfff580b206a7fe305cdccd00798159">
+        <dex dex="/Users/marcin/Projects/ClearScore/ClearScore/app/build/intermediates/pre-dexed/alpha/io.reactivex-rxandroid-1.2.1_699a338006c1c4ba4cfadb31510f00ad167eecee.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/marcin/.gradle/caches/modules-2/files-2.1/com.squareup.okio/okio/1.8.0/5ea7af56cc7c567ed9856d99efb30740e9b17ff/okio-1.8.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="05ea7af56cc7c567ed9856d99efb30740e9b17ff">
+        <dex dex="/Users/marcin/Projects/ClearScore/ClearScore/app/build/intermediates/pre-dexed/alpha/okio-1.8.0_d6acfe63840ab974647217bad51fda20042e158a.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/marcin/.gradle/caches/modules-2/files-2.1/com.squareup.retrofit2/converter-gson/2.0.0/49eb3ad545e7701234e4dd83db8dc1344b577f23/converter-gson-2.0.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="49eb3ad545e7701234e4dd83db8dc1344b577f23">
+        <dex dex="/Users/marcin/Projects/ClearScore/ClearScore/app/build/intermediates/pre-dexed/alpha/converter-gson-2.0.0_73ebef536b4b19baa0b3782a3c8f89ba2faac958.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/marcin/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/24.0.0/support-annotations-24.0.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="2943c74db6d4346ab8c6531adac91fa05c137c40">
+        <dex dex="/Users/marcin/Projects/ClearScore/ClearScore/app/build/intermediates/pre-dexed/alpha/support-annotations-24.0.0_026503f736a729dc4d55acd716e0b4320766aa7e.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/marcin/.gradle/caches/modules-2/files-2.1/com.squareup/javapoet/1.7.0/4fdcf1fc27c1a8f55d1109df986c923152f07759/javapoet-1.7.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="4fdcf1fc27c1a8f55d1109df986c923152f07759">
+        <dex dex="/Users/marcin/Projects/ClearScore/ClearScore/app/build/intermediates/pre-dexed/alpha/javapoet-1.7.0_362bb0f047eba9d5bb4cc658a85aad3e302609d1.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/marcin/.gradle/caches/modules-2/files-2.1/io.reactivex/rxjava/1.1.7/45aaffc3cf6fa7c9b9eed6121369cad25789cf4a/rxjava-1.1.7.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="45aaffc3cf6fa7c9b9eed6121369cad25789cf4a">
+        <dex dex="/Users/marcin/Projects/ClearScore/ClearScore/app/build/intermediates/pre-dexed/alpha/rxjava-1.1.7_28a6fcdbe6a63785b4a7a41be7a6e2adeef3cf0e.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/marcin/.gradle/caches/modules-2/files-2.1/com.google.auto.service/auto-service/1.0-rc2/51033a5b8fcf7039159e35b6878f106ccd5fb35f/auto-service-1.0-rc2.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="51033a5b8fcf7039159e35b6878f106ccd5fb35f">
+        <dex dex="/Users/marcin/Projects/ClearScore/ClearScore/app/build/intermediates/pre-dexed/alpha/auto-service-1.0-rc2_7f3f7d8f666b05c44d3876f1d786d8318020a37c.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/marcin/.gradle/caches/modules-2/files-2.1/com.google.auto/auto-common/0.6/cf7212b0f8bfef12657b942df8f4f2cf032d3f41/auto-common-0.6.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="cf7212b0f8bfef12657b942df8f4f2cf032d3f41">
+        <dex dex="/Users/marcin/Projects/ClearScore/ClearScore/app/build/intermediates/pre-dexed/alpha/auto-common-0.6_a92e139a7e40c6a17fabf111da27f4601cce40a1.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/marcin/.gradle/caches/modules-2/files-2.1/com.squareup.retrofit2/adapter-rxjava/2.0.2/a60c039ba54c73d1133b72178e1b04133c73d13d/adapter-rxjava-2.0.2.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="a60c039ba54c73d1133b72178e1b04133c73d13d">
+        <dex dex="/Users/marcin/Projects/ClearScore/ClearScore/app/build/intermediates/pre-dexed/alpha/adapter-rxjava-2.0.2_d516fcc25cbe4964f8b6dc687e1754d4944664d8.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/marcin/.gradle/caches/modules-2/files-2.1/com.google.guava/guava/18.0/cce0823396aa693798f8882e64213b1772032b09/guava-18.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="cce0823396aa693798f8882e64213b1772032b09">
+        <dex dex="/Users/marcin/Projects/ClearScore/ClearScore/app/build/intermediates/pre-dexed/alpha/guava-18.0_41951184dcd38a8c6c57f5f4bab8cfdaabf87a6d.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/marcin/Projects/ClearScore/ClearScore/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.3.0/jars/libs/internal_impl-23.3.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="4da5a4d697d32497c6f85567a5112e62fdfd0676">
+        <dex dex="/Users/marcin/Projects/ClearScore/ClearScore/app/build/intermediates/pre-dexed/alpha/internal_impl-23.3.0_c3325526cdcc7d2cbab9c256941874f61252c714.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/marcin/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp3/okhttp/3.3.0/2b802460eea20f8f2ad9c08c74e0f14718e88aa9/okhttp-3.3.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="2b802460eea20f8f2ad9c08c74e0f14718e88aa9">
+        <dex dex="/Users/marcin/Projects/ClearScore/ClearScore/app/build/intermediates/pre-dexed/alpha/okhttp-3.3.0_a4bf81818e6872a7cba57a46e500608d633f0a75.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/marcin/.gradle/caches/modules-2/files-2.1/com.jakewharton/butterknife-compiler/8.2.1/66193507a52d5bb253b13850f191294ad767bb9/butterknife-compiler-8.2.1.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="066193507a52d5bb253b13850f191294ad767bb9">
+        <dex dex="/Users/marcin/Projects/ClearScore/ClearScore/app/build/intermediates/pre-dexed/alpha/butterknife-compiler-8.2.1_df7b8b0d01770916668188a2e21529e980bf4889.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/marcin/.gradle/caches/modules-2/files-2.1/com.squareup.retrofit2/retrofit/2.1.0/2de7cd8b95b7021b1d597f049bcb422055119f2c/retrofit-2.1.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="2de7cd8b95b7021b1d597f049bcb422055119f2c">
+        <dex dex="/Users/marcin/Projects/ClearScore/ClearScore/app/build/intermediates/pre-dexed/alpha/retrofit-2.1.0_3bf9d9657229f6bdea1f58e4961c9b8d22e6946e.jar" />
+    </item>
+
+</items>
