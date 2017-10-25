@@ -121,6 +121,7 @@ def notify(message, success, channel, user)
 end
 
 def notifyWithNotes(message, success, notes, channel, user)
+  channel = 'jenkins-test'
   if get_build_environment == 'CI'
 
     fields = []
