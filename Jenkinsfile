@@ -64,7 +64,7 @@ else if (branch_type == "release" || branch_type == "hotfix") {
  */
 def publishUnitTestReport(){
 	try {
-		step([$class: "JUnitResultArchiver", testResults: "ClearScore/app/build/test-results/testAlphaUnitTest/TEST-*.xml"])
+		step([$class: "JUnitResultArchiver", testResults: "ClearScore/app/build/test-results/alpha/TEST-*.xml"])
 	} catch (Exception e) {
 		echo "Test results are missing."
 		currentBuild.result  = 'UNSTABLE'
