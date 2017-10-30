@@ -72,7 +72,7 @@ platform :android do
     
     feature_name = get_feature_name()
     parent_branch = options[:parent_branch]
-    if ensure_has_latest_changes_from_develop(otherwise_merge: true)
+    if ensure_has_latest_changes_from_develop(otherwise_merge: true) == false
       notify("Your feature `#{feature_name}` branch is behind `#{parent_branch}` - update it first!", false, nil, '#mobile-apps-dev-droid', true)
       exit(1)
     end
