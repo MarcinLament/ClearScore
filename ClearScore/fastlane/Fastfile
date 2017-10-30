@@ -90,7 +90,7 @@ platform :android do
       exit(1)
     end
   end
-  
+
 end
 
 after_all do |lane|
@@ -134,7 +134,8 @@ def get_keystore_location()
 end
 
 def get_feature_name()
-  branch = ENV['SOURCE_BRANCH_NAME'].dup
+  # branch = ENV['SOURCE_BRANCH_NAME'].dup
+  branch = git_branch.dup
   branch.slice! "origin/"
   branch.slice! "feature/"
   return branch
