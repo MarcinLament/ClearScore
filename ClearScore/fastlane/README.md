@@ -30,26 +30,21 @@ xcode-select --install
 
 # Available Actions
 ## Android
-### android ensureCheckout
+### android featureEnsureCheckout
 ```
-fastlane android ensureCheckout
+fastlane android featureEnsureCheckout
 ```
-Ensuring clean repository checkout
-### android unitTest
+Ensuring clean repository checkout for feature build.
+### android featureUnitTest
 ```
-fastlane android unitTest
+fastlane android featureUnitTest
 ```
-Runs all Unit tests
-### android deployAlphaToFabric
+Runs Alpha Unit tests for feature build.
+### android featureDeploy
 ```
-fastlane android deployAlphaToFabric
+fastlane android featureDeploy
 ```
-Publishing to Fabric
-### android ble
-```
-fastlane android ble
-```
-
+Building & Deploying feature to Fabric
 
 ----
 

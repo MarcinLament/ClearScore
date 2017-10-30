@@ -6,14 +6,9 @@ env.SOURCE_BRANCH_NAME = env.BRANCH_NAME
 env.GITHUB_REPO = "ClearScore"
 env.GITHUB_REPO_OWNER = "MarcinLament"
 
-def hasOpenPullRequest = false
 node {
 	withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: env.GITHUB_USER_ID, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
 		env.GITHUB_ACCESS_TOKEN = PASSWORD
-		if (env.BRANCH_NAME.toLowerCase().startsWith('pr-')) {
-			hasOpenPullRequest = true
-			// env.SOURCE_BRANCH_NAME = getBranchNameFromPR(env.CHANGE_ID)
-		}
 	}
 }
 
@@ -28,16 +23,16 @@ if (branch_type == "feature" || branch_type == "bug")  {
 			deleteDir()
 			checkout scm
 			env.PULL_REQUEST_NUMBER = getPRNumberFromBranch(env.SOURCE_BRANCH_NAME)
-			env.CHANGE_COMMIT_ID = getLatestCommitIdForPR()
+			// env.CHANGE_COMMIT_ID = getLatestCommitIdForPR()
 			sh 'printenv'
-			fastlane('ensureCheckout parent_branch:develop')
+			fastlane('featureEnsureCheckout parent_branch:develop')
 		}
 	}
 
 	stage('Unit Test') {
 		node {
 			try {
-				fastlane('unitTest')
+				fastlane('featureUnitTest')
 				publishUnitTestReport()
 			} catch (ex) {
 				publishUnitTestReport()
