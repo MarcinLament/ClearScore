@@ -117,12 +117,14 @@ def ensure_has_latest_changes_from_develop(otherwise_merge: false)
 
     if File.file?('.git/MERGE_HEAD')
       sh('git merge --abort')
+      puts 'Unable to automatically merge from develop due to merge conflicts.'
       return false
     end
 
     puts 'Pushing merge...'
     push_to_git_remote
   else
+    puts 'Please ensure latest changes from origin/develop have been merged in'
     return false
   end
 
