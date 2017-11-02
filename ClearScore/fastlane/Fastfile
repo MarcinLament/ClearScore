@@ -68,7 +68,7 @@ platform :android do
   lane :featureDeploy do |options|
 
     ensure_git_branch(branch: 'feature\/.+|bug\/.+')
-    ensure_git_status_clean
+    # ensure_git_status_clean
     
     feature_name = get_feature_name()
     parent_branch = options[:parent_branch]
@@ -80,13 +80,10 @@ platform :android do
     begin
       gradle(task: 'assembleAlpha -PClearScore.signing="' + get_keystore_location + '" -PVersionCode=' + options[:build_number])
       notes = "Feature build: " + feature_name
-      crashlytics(
-        notes: notes,
-        groups: 'Testers'
-      )
+      crashlytics()
       notify("New feature `" + feature_name + "` published to Fabric and it's ready to be tested! `Build \#"+options[:build_number]+"`", true, nil, '#mobile-apps', false)
     rescue => ex
-      notify("Failed building `" + feature_name + "`", false, nil, '#mobile-apps-dev-droid', true)
+      notify("Cannot build `" + feature_name + "`", false, nil, '#mobile-apps-dev-droid', true)
       exit(1)
     end
   end
