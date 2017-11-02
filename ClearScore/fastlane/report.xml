@@ -5,64 +5,64 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="00: opt_out_crash_reporting" time="0.0016">
+      <testcase classname="fastlane.lanes" name="00: opt_out_crash_reporting" time="0.001588">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="01: Verifying required fastlane version" time="0.001489">
+      <testcase classname="fastlane.lanes" name="01: Verifying required fastlane version" time="0.001632">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="02: default_platform" time="0.001304">
+      <testcase classname="fastlane.lanes" name="02: default_platform" time="0.001407">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="03: ensure_git_branch" time="0.013418">
+      <testcase classname="fastlane.lanes" name="03: ensure_git_branch" time="0.014619">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="04: git_branch" time="0.020972">
+      <testcase classname="fastlane.lanes" name="04: git_branch" time="0.022027">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="05: git fetch" time="2.756219">
+      <testcase classname="fastlane.lanes" name="05: git fetch" time="1.308792">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="06: git merge-base HEAD origin/develop" time="0.0185">
+      <testcase classname="fastlane.lanes" name="06: git merge-base HEAD origin/develop" time="0.017303">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="07: git show-ref -s origin/develop" time="0.015423">
+      <testcase classname="fastlane.lanes" name="07: git show-ref -s origin/develop" time="0.015472">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="08: gradle" time="12.570084">
+      <testcase classname="fastlane.lanes" name="08: gradle" time="11.411974">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="09: crashlytics" time="0.448733">
+      <testcase classname="fastlane.lanes" name="09: crashlytics" time="0.435736">
         
           <failure message="/Users/marcin/.rvm/gems/ruby-2.4.1/gems/fastlane-2.60.1/fastlane/lib/fastlane/actions/actions_helper.rb:48:in `execute_action'&#10;/Users/marcin/.rvm/gems/ruby-2.4.1/gems/fastlane-2.60.1/fastlane/lib/fastlane/runner.rb:230:in `block in execute_action'&#10;/Users/marcin/.rvm/gems/ruby-2.4.1/gems/fastlane-2.60.1/fastlane/lib/fastlane/runner.rb:226:in `chdir'&#10;/Users/marcin/.rvm/gems/ruby-2.4.1/gems/fastlane-2.60.1/fastlane/lib/fastlane/runner.rb:226:in `execute_action'&#10;/Users/marcin/.rvm/gems/ruby-2.4.1/gems/fastlane-2.60.1/fastlane/lib/fastlane/runner.rb:148:in `trigger_action_by_name'&#10;/Users/marcin/.rvm/gems/ruby-2.4.1/gems/fastlane-2.60.1/fastlane/lib/fastlane/fast_file.rb:146:in `method_missing'&#10;Fastfile:83:in `block (2 levels) in parsing_binding'&#10;/Users/marcin/.rvm/gems/ruby-2.4.1/gems/fastlane-2.60.1/fastlane/lib/fastlane/lane.rb:33:in `call'&#10;/Users/marcin/.rvm/gems/ruby-2.4.1/gems/fastlane-2.60.1/fastlane/lib/fastlane/runner.rb:49:in `block in execute'&#10;/Users/marcin/.rvm/gems/ruby-2.4.1/gems/fastlane-2.60.1/fastlane/lib/fastlane/runner.rb:45:in `chdir'&#10;/Users/marcin/.rvm/gems/ruby-2.4.1/gems/fastlane-2.60.1/fastlane/lib/fastlane/runner.rb:45:in `execute'&#10;/Users/marcin/.rvm/gems/ruby-2.4.1/gems/fastlane-2.60.1/fastlane/lib/fastlane/lane_manager.rb:52:in `cruise_lane'&#10;/Users/marcin/.rvm/gems/ruby-2.4.1/gems/fastlane-2.60.1/fastlane/lib/fastlane/command_line_handler.rb:30:in `handle'&#10;/Users/marcin/.rvm/gems/ruby-2.4.1/gems/fastlane-2.60.1/fastlane/lib/fastlane/commands_generator.rb:104:in `block (2 levels) in run'&#10;/Users/marcin/.rvm/gems/ruby-2.4.1@global/gems/commander-fastlane-4.4.5/lib/commander/command.rb:178:in `call'&#10;/Users/marcin/.rvm/gems/ruby-2.4.1@global/gems/commander-fastlane-4.4.5/lib/commander/command.rb:153:in `run'&#10;/Users/marcin/.rvm/gems/ruby-2.4.1@global/gems/commander-fastlane-4.4.5/lib/commander/runner.rb:476:in `run_active_command'&#10;/Users/marcin/.rvm/gems/ruby-2.4.1/gems/fastlane-2.60.1/fastlane_core/lib/fastlane_core/ui/fastlane_runner.rb:64:in `run!'&#10;/Users/marcin/.rvm/gems/ruby-2.4.1@global/gems/commander-fastlane-4.4.5/lib/commander/delegates.rb:15:in `run!'&#10;/Users/marcin/.rvm/gems/ruby-2.4.1/gems/fastlane-2.60.1/fastlane/lib/fastlane/commands_generator.rb:303:in `run'&#10;/Users/marcin/.rvm/gems/ruby-2.4.1/gems/fastlane-2.60.1/fastlane/lib/fastlane/commands_generator.rb:42:in `start'&#10;/Users/marcin/.rvm/gems/ruby-2.4.1/gems/fastlane-2.60.1/fastlane/lib/fastlane/cli_tools_distributor.rb:66:in `take_off'&#10;/Users/marcin/.rvm/gems/ruby-2.4.1/gems/fastlane-2.60.1/bin/fastlane:20:in `&lt;top (required)&gt;'&#10;/Users/marcin/.rvm/gems/ruby-2.4.1/bin/fastlane:23:in `load'&#10;/Users/marcin/.rvm/gems/ruby-2.4.1/bin/fastlane:23:in `&lt;main&gt;'&#10;/Users/marcin/.rvm/gems/ruby-2.4.1/bin/ruby_executable_hooks:15:in `eval'&#10;/Users/marcin/.rvm/gems/ruby-2.4.1/bin/ruby_executable_hooks:15:in `&lt;main&gt;'&#10;&#10; WARN - Crashlytics halted compilation because it can't extract Crashlytics build info from the APK: /Users/marcin/Projects/ClearScore/ClearScore/app/build/outputs/apk/app-alpha.apk&#10;Exception in thread &quot;main&quot; com.crashlytics.tools.android.exception.PluginException: Distribution upload failed.&#10;	at com.crashlytics.tools.android.DeveloperTools.processProperties(DeveloperTools.java:667)&#10;	at com.crashlytics.tools.android.DeveloperTools.processArgsInternal(DeveloperTools.java:348)&#10;	at com.crashlytics.tools.android.DeveloperTools.main(DeveloperTools.java:273)&#10;Caused by: com.crashlytics.tools.android.exception.DistributionException: Crashlytics halted compilation because it can't extract Crashlytics build info from the APK: /Users/marcin/Projects/ClearScore/ClearScore/app/build/outputs/apk/app-alpha.apk&#10;	at com.crashlytics.tools.android.DistributionTasks.uploadDistribution(DistributionTasks.java:64)&#10;	at com.crashlytics.tools.android.DeveloperTools.processProperties(DeveloperTools.java:665)&#10;	... 2 more&#10;" />
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="10: git log --format=&quot;%ae&quot; | head -1" time="0.085948">
+      <testcase classname="fastlane.lanes" name="10: git log --format=&quot;%ae&quot; | head -1" time="0.021399">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="11: curl http://172.17.3.151:9991/user/marcin@clearscore.com --silent" time="0.02899">
+      <testcase classname="fastlane.lanes" name="11: curl http://172.17.3.151:9991/user/marcin@clearscore.com --silent" time="0.043621">
         
       </testcase>
     
