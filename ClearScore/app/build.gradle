@@ -32,6 +32,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+
+        alpha {
+
+        }
     }
     packagingOptions {
         exclude 'META-INF/services/javax.annotation.processing.Processor'

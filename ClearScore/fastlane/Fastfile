@@ -1,0 +1,245 @@
+# Customise this file, documentation can be found here:
+# https://github.com/fastlane/fastlane/tree/master/fastlane/docs
+# All available actions: https://docs.fastlane.tools/actions
+# can also be listed using the `fastlane actions` command
+
+fastlane_require 'slack-ruby-client'
+
+# Change the syntax highlighting to Ruby
+# All lines starting with a # are ignored when running `fastlane`
+
+opt_out_crash_reporting
+
+# If you want to automatically update fastlane if a new version is available:
+#update_fastlane
+
+# This is the minimum version number required.
+# Update this, if you use features of a newer version
+fastlane_version "2.60.1"
+
+default_platform :android
+
+Slack.configure do |config|
+  config.token = ENV['SLACK_TOKEN']
+end
+
+platform :android do
+  before_all do
+    # ENV["CRASHLYTICS_API_TOKEN"] = "2e866a70dd80ed290acd7f36b1ea2dfb4f41e935"
+    # ENV["CRASHLYTICS_BUILD_SECRET"] = "cb3440eeb0a7983a4aa4606cc5ba20287fe4e9d2c6a4b535b05d000425b9f4c7"
+    ENV["CRASHLYTICS_API_TOKEN"] = "d1c91d54e078676f5a4cce31c32487999141a193"
+    ENV["CRASHLYTICS_BUILD_SECRET"] = "87674eca32e08647cd65145b9c3be026f1649e98623bf6ac0a684fc4c823add0"
+    ENV["FASTLANE_HIDE_GITHUB_ISSUES"] = "1"
+    ENV["FASTLANE_SKIP_UPDATE_CHECK"] = "1"
+  end
+
+# ==================================== Feature CI Checkout Lane =======================================
+  desc "Ensuring clean repository checkout for feature build."
+    lane :featureEnsureCheckout do |options|
+
+    ensure_git_status_clean
+
+    parent_branch = options[:parent_branch]
+    if ensure_has_latest_changes_from_develop(otherwise_merge: false)
+      update_github_status("Checkout", "Up to date with #{parent_branch}", "success")
+    else
+      update_github_status("Checkout", "Outdated - merge in the #{parent_branch} branch first", "failure")
+      notify("Your feature `#{get_feature_name()}` branch is behind `#{parent_branch}` - update it first!", false, nil, nil, true)
+      exit(1)
+    end
+  end
+
+# =================================== Feature CI Unit Test Lane =======================================
+  desc "Runs Alpha Unit tests for feature build."
+  lane :featureUnitTest do
+    begin
+      update_github_status("UnitTest", "Running tests", "pending")
+      gradle(task: "testAlphaUnitTest")
+      update_github_status("UnitTest", "All tests passed", "success")
+    rescue => ex
+      update_github_status("UnitTest", "Testing failed", "failure")
+      notify("Your feature `#{get_feature_name()}` failed automated testing!", false, nil, nil, true)
+      exit(1)
+    end
+  end
+
+# ====================================== Feature Deploy Lane ==========================================
+  desc "Building & Deploying feature to Fabric"
+  lane :featureDeploy do |options|
+
+    ensure_git_branch(branch: 'feature\/.+|bug\/.+')
+    # ensure_git_status_clean
+    
+    feature_name = get_feature_name()
+    parent_branch = options[:parent_branch]
+    if ensure_has_latest_changes_from_develop(otherwise_merge: true) == false
+      notify("Your feature `#{feature_name}` branch is behind `#{parent_branch}` - update it first!", false, nil, '#mobile-apps-dev-droid', true)
+      exit(1)
+    end
+
+    begin
+      gradle(task: 'assembleAlpha -PClearScore.signing="' + get_keystore_location + '" -PVersionCode=' + options[:build_number])
+      notes = "Feature build: " + feature_name
+      crashlytics()
+      notify("New feature `" + feature_name + "` published to Fabric and it's ready to be tested! `Build \#"+options[:build_number]+"`", true, nil, '#mobile-apps', false)
+    rescue => ex
+      notify("Cannot build `" + feature_name + "`", false, nil, '#mobile-apps-dev-droid', true)
+      exit(1)
+    end
+  end
+
+end
+
+after_all do |lane|
+  # This block is called, only if the executed lane was successful
+end
+
+error do |lane, exception|
+end
+
+# ============================================ Utils =================================================
+
+def ensure_has_latest_changes_from_develop(otherwise_merge: false)
+  
+  sh('git fetch')
+  common_ancestor_with_develop = sh('git merge-base HEAD origin/develop')
+  tip_of_develop = sh('git show-ref -s origin/develop')
+  has_latest_changes_from_develop = common_ancestor_with_develop == tip_of_develop
+
+  if has_latest_changes_from_develop
+    puts 'Already up to date with latest changes on develop'
+  elsif otherwise_merge
+    puts 'Merging latest changes from origin/develop...'
+    sh('git merge origin/develop --commit --no-edit')
+
+    if File.file?('.git/MERGE_HEAD')
+      sh('git merge --abort')
+      puts 'Unable to automatically merge from develop due to merge conflicts.'
+      return false
+    end
+
+    puts 'Pushing merge...'
+    push_to_git_remote
+  else
+    puts 'Please ensure latest changes from origin/develop have been merged in'
+    return false
+  end
+
+  return true
+end
+
+def get_keystore_location()
+  return ENV['ANDROID_BUILD_UTILITY_DIR'] + "/" + ENV['GITHUB_REPO'] + "/Certs/ClearScore.signing"
+end
+
+def get_feature_name()
+  # branch = ENV['SOURCE_BRANCH_NAME'].dup
+  branch = git_branch.dup
+  branch.slice! "origin/"
+  branch.slice! "feature/"
+  return branch
+end
+
+def notify(message, success, notes, channel, include_user)
+  if get_build_environment == 'CI'
+
+    channel = "jenkins-test"
+
+    fields = []
+    unless notes.nil? || notes.empty?
+      fields.push({title: "What's New", value: notes, short: false})
+    end
+
+    change_url = get_pull_request_url()
+    unless change_url.nil? || change_url.empty?
+      fields.push({title: "", value: "<#{change_url}|Pull Request Details>", short: false})
+    end
+
+    job_url = ENV['RUN_DISPLAY_URL']
+    unless job_url.nil? || job_url.empty?
+      fields.push({title: "", value: "<#{job_url}|Jenkins Job Details>", short: false})
+    end
+
+    if include_user
+      git_user = get_user_for_latest_commit()
+      slack_user = map_git_user_to_slack_username(git_user)
+      unless slack_user.nil? || slack_user.empty?
+        if channel.nil? || channel.empty? 
+          channel = slack_user
+        else
+          message = slack_user + ", " + message
+        end
+      end
+    end
+    
+    # post to slack
+    client = Slack::Web::Client.new
+    client.chat_postMessage(
+      channel: channel, 
+      link_names: 1, 
+      attachments: [
+        {
+            text: message,
+            color: success ? 'good' : 'danger',
+            fields: fields,
+            mrkdwn_in: ["text"]
+        }
+      ],
+      as_user: true
+    )
+  end
+end
+
+def ensure_branch_up_to_date_with_source(parent_branch)
+  # Get common ancestor of both branches
+  sha1 = sh("git merge-base @ origin/#{parent_branch}")
+  # Get the latest revision on the parent bnrach
+  sha2 = sh("git rev-parse origin/#{parent_branch}")
+  return sha1 == sha2
+end  
+
+def map_git_user_to_slack_username(git_user)
+  print git_user
+  print slack_user = sh("curl #{ENV['BUILD_NUMBER_SERVER_URL']}/user/#{git_user} --silent").delete(" \t\r\n")
+  return slack_user
+end
+
+def get_user_for_latest_commit()
+  return sh('git log --format="%ae" | head -1').delete(" \t\r\n")
+end
+
+def update_github_status(job_name, desc, state)
+  if get_build_environment == 'CI'
+    github_job_status(
+      token: ENV['GITHUB_ACCESS_TOKEN'],
+      owner: ENV['GITHUB_REPO_OWNER'],
+      repo: ENV['GITHUB_REPO'],
+      job_name: job_name,
+      build_url: "#{ENV['RUN_DISPLAY_URL']}",
+      description: desc,
+      state: state
+    )
+  end
+end
+
+def get_build_environment
+  return ENV['BUILD_ENVIRONMENT']
+end
+
+def get_commit_hash 
+  sh("git rev-parse HEAD")
+end
+
+def get_pull_request_url
+  pr_number = ENV['PULL_REQUEST_NUMBER']
+  unless pr_number.nil? || pr_number.empty?
+    return "https://github.com/#{ENV['GITHUB_REPO_OWNER']}/#{ENV['GITHUB_REPO']}/pull/#{pr_number}"
+  end
+  return nil
+end
+
+def change_log_since_last_tag(build_type)
+  # http://git-scm.com/docs/pretty-formats
+  # <short hash> <commit title>
+  return changelog_from_git_commits(pretty: '%h %s', tag_match_pattern: "#{build_type}/*")
+end
